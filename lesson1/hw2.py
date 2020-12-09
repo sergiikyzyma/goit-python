@@ -1,9 +1,7 @@
-name = input("Enter your name")
-print(name)
-x = 70
-y = 134
-result = f"{x} + {y} = {x + y}"
-print("result = ", result)
-number = input("Enter any number")
-qube = float(number) ** (1/3)
-print(f"cube root from {number} is {qube}")
+a = float(input("a "))
+b = float(input("b "))
+c = float(input("c "))
+D = b ** 2 - 4 * a * c
+x1 = ((-1) * b + D ** 0.5) / 2 * a
+x2 = ((-1) * b - D ** 0.5) / 2 * a
+print(f"x1 = {x1} x2 = {x2}")
