@@ -18,12 +18,11 @@ while strOperation != '=':                                          # Прило
             elif strOperation == '*' or strOperation == '/':
                 intResult = 1
                 floatResult = 1
+            elif strOperation == '=':
+                continue
             else:
-                if strOperation == '=':
-                    continue
-                else:
-                    print("You maked the fail by input")            # Приложение корректно обрабатывает ситуацию некорректного ввода.
-                    continue
+                print("You maked the fail by input")               # Приложение корректно обрабатывает ситуацию некорректного ввода.
+                continue
         else:
             floatVariable = value
             isOperand += 1                                          # Пользователь по очереди вводит числа и операторы.
@@ -39,6 +38,7 @@ while strOperation != '=':                                          # Прило
         elif isOperator == 2:                                       # Если пользователь вводит число два раза подряд, то он получает сообщение об ошибке и может ввести повторно.
             print("You entered 2 oprrators successively, please reenrer again/n")
             continue
+
     if strOperation == '+' and intVariable != 0:                    # Все операции приложение выполняет по мере поступления одну за одной.
         intResult += intVariable
         flag += 1
@@ -53,65 +53,63 @@ while strOperation != '=':                                          # Прило
             floatVariable = floatResult
             strOperation = ''
             flag = 0
-    else:
-        if strOperation == '-' and intVariable != 0:
-            if flag == 0:
-                intResult = intVariable
-            elif flag == 1:
-                intResult -= intVariable
-            flag += 1
-            if flag == 2:
-                intVariable = intResult
-                strOperation = ''
-                flag = 0
-        elif strOperation == '-' and floatVariable != 0:
-            if flag == 0:
-                floatResult = floatVariable
-            elif flag == 1:
-                floatResult -= floatVariable
-            flag += 1
-            if flag == 2:
-                floatVariable = floatResult
-                strOperation = ''
-                flag = 0
-        else:
-            if strOperation == '*' and intVariable != 0:
-                intResult *= intVariable
-                flag += 1
-                if flag == 2:
-                    intVariable = intResult
-                    strOperation = ''
-                    flag = 0
-            elif strOperation == '*' and floatVariable != 0:
-                floatResult *= floatVariable
-                flag += 1
-                if flag == 2:
-                    floatVariable = floatResult
-                    strOperation = ''
-                    flag = 0
-            else:
-                if strOperation == '/' and intVariable != 0:
-                    if flag == 0:
-                        intResult = intVariable
-                    elif flag == 1:
-                        intResult /= intVariable
-                    flag += 1
-                    if flag == 2:
-                        intVariable = intResult
-                        strOperation = ''
-                        flag = 0
-                elif strOperation == '/' and floatVariable != 0:
-                    if flag == 0:
-                        floatResult = floatVariable
-                    elif flag == 1:
-                        floatResult /= floatVariable
-                    flag += 1
-                    if flag == 2:
-                        floatVariable = floatResult
-                        strOperation = ''
-                        flag = 0
+
+    elif strOperation == '-' and intVariable != 0:                  # Все операции приложение выполняет по мере поступления одну за одной.
+        if flag == 0:
+            intResult = intVariable
+        elif flag == 1:
+            intResult -= intVariable
+        flag += 1
+        if flag == 2:
+            intVariable = intResult
+            strOperation = ''
+            flag = 0
+    elif strOperation == '-' and floatVariable != 0:
+        if flag == 0:
+            floatResult = floatVariable
+        elif flag == 1:
+            floatResult -= floatVariable
+        flag += 1
+        if flag == 2:
+            floatVariable = floatResult
+            strOperation = ''
+            flag = 0
+            
+    elif strOperation == '*' and intVariable != 0:                  # Все операции приложение выполняет по мере поступления одну за одной.
+        intResult *= intVariable
+        flag += 1
+        if flag == 2:
+            intVariable = intResult
+            strOperation = ''
+            flag = 0
+    elif strOperation == '*' and floatVariable != 0:
+        floatResult *= floatVariable
+        flag += 1
+        if flag == 2:
+            floatVariable = floatResult
+            strOperation = ''
+            flag = 0
+
+    elif strOperation == '/' and intVariable != 0:                  # Все операции приложение выполняет по мере поступления одну за одной.
+        if flag == 0:
+            intResult = intVariable
+        elif flag == 1:
+            intResult /= intVariable
+        flag += 1
+        if flag == 2:
+            intVariable = intResult
+            strOperation = ''
+            flag = 0
+    elif strOperation == '/' and floatVariable != 0:
+        if flag == 0:
+            floatResult = floatVariable
+        elif flag == 1:
+            floatResult /= floatVariable
+        flag += 1
+        if flag == 2:
+            floatVariable = floatResult
+            strOperation = ''
+            flag = 0
+
 else:
-    if intResult != 0:                                              # Приложение заканчивает свою работу после того, как выведет результат вычисления.
-        print("Result = ", intResult)
-    elif floatResult != 0:
-        print("Result = ", floatResult)
+    print(f"\t\t\tResult (operands are integer) = {intResult} \t\t\tResult (operands are float) = {floatResult}")    # Приложение заканчивает свою работу после того, как выведет результат вычисления.
