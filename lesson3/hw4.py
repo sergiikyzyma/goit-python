@@ -7,29 +7,33 @@ print(path)'''
 files = os.listdir("/media/teosoph/Data/Квартира")
 #print(files)
 
-cortEmpty = tuple("")
-cortImage = tuple("jpeg" "png" "jpg")
-cortVideo = tuple("avi" "mp4" "mov")
-cortText = tuple("doc" "dcox" "txt" "odt")
-cortMusic = tuple("mp3" "ogg" "wav" "amr")
-cortVarious = tuple("max" "vsd")
+cortFolder = ("folder")
+cortImage = ("jpeg", "png", "jpg", "")
+cortVideo = ("avi", "mp4", "mov", "")
+cortText = ("doc", "dcox", "txt", "odt")
+cortMusic = ("mp3", "ogg", "wav", "amr")
+cortVarious = ("max", "vsd", "", "")
 
-dictFiles = {cortEmpty: "", cortImage: "", cortVideo: "", cortText: "", cortMusic: "", cortVarious: ""}
-'''
-i = 0
-for ch in files[i]:
-    strType = ""
-    if "." in files[i]:
-        if cortImage[j] in files[i]:
-            strType += files[i].endswith(cortImage[j])
+dictFiles = {cortFolder: "", cortImage: "", cortVideo: "", cortText: "", cortMusic: "", cortVarious: ""}
+
+for elem in files:
+    if "." in elem:
+        j = 0
+        while not (elem.endswith(cortImage[j]) or elem.endswith(cortVideo[j]) or elem.endswith(cortText[j]) or elem.endswith(cortMusic[j]) or elem.endswith(cortVarious[j])):
+            j += 1
+        else:
+            if elem.endswith(cortImage[j]):
+                dictFiles[cortImage] = elem
+            elif elem.endswith(cortVideo[j]):
+                dictFiles[cortVideo] = elem
+            elif elem.endswith(cortText[j]):
+                dictFiles[cortText] = elem
+            elif elem.endswith(cortMusic[j]):
+                dictFiles[cortMusic] = elem
+            elif elem.endswith(cortVarious[j]):
+                dictFiles[cortVarious] = elem
     else:
-        pass
-else:
-    i += 1
+        dictFiles[cortFolder] = elem
 
-print(dictFiles)'''
-if "." in files[0]:
-    print(files[0].endswith(cortImage[3]))
-    #dictFiles[cortImage] = cortImage[3]
-    #files[0].find(sub: text, end: cortImage[3])
-    print(dictFiles)
+    for key, value in dictFiles.items():
+        print(f"Keys = {key} Values = {value}")
