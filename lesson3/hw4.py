@@ -1,11 +1,9 @@
 import os
-'''import sys
+import sys
 
 path = sys.argv[1]
-print(path)'''
-
-files = os.listdir("/media/teosoph/Data/Квартира")
-#print(files)
+print(path)
+files = os.listdir(path)
 
 cortFolder = ("folder")
 cortImage = ("jpeg", "png", "jpg", "")
@@ -37,17 +35,25 @@ for elem in files:
 
 while True:
     os.system("clear")
-    find = input("Enter that you wanna find (folder, image, video, text, various or all) or exit\t")
+    find = input("Enter that you wanna find (folder, image, video, text, musics, various or all) or exit\t")
     if find == "folder":
         key = cortFolder
+        print(f"\nList of folders ({key})\n")
     elif find == "image":
         key = cortImage
+        print(f"\nList of images ({key})\n")
     elif find == "video":
         key = cortVideo
+        print(f"\nList of video files ({key})\n")
     elif find == "text":
         key = cortText
+        print(f"\nList of documents ({key})\n")
+    elif find == "music":
+        key = cortMusic
+        print(f"\nList of music files ({key})\n")
     elif find == "various":
         key = cortVarious
+        print(f"\nList of various files ({key})\n")
     elif find == "all":
         for key, value in dictFiles.items():
             if key == cortFolder:
@@ -55,11 +61,11 @@ while True:
             elif key == cortImage:
                 print(f"\nList of images ({key}) : {value}")
             elif key == cortVideo:
-                print(f"\nList of video ({key}) : {value}")
+                print(f"\nList of video files ({key}) : {value}")
             elif key == cortText:
                 print(f"\nList of documents ({key}) : {value}")
             elif key == cortMusic:
-                print(f"\nList of musics ({key}) : {value}")
+                print(f"\nList of music files ({key}) : {value}")
             elif key == cortVarious:
                 print(f"\nList of various files ({key}) : {value}")
         input("\nPress any key to continue")
@@ -67,6 +73,9 @@ while True:
     elif find == "exit":
         input("\nPress any key to continue")
         break
-    for value in dictFiles.get(key):
-        print(value)
+    try:
+        for value in dictFiles.get(key):
+            print(value)
+    except NameError:
+        print("\nYou maked the fail by inputing")
     input("\nPress any key to continue")
