@@ -6,11 +6,11 @@ print(path)
 files = os.listdir(path)
 
 cortFolder = ("folder")
-cortImage = ("jpeg", "png", "jpg", "")
-cortVideo = ("avi", "mp4", "mov", "")
+cortImage = ("jpeg", "png", "jpg", "svg")
+cortVideo = ("avi", "mp4", "mov", "mpg")
 cortText = ("doc", "dcox", "txt", "odt")
 cortMusic = ("mp3", "ogg", "wav", "amr")
-cortVarious = ("max", "vsd", "blend", "")
+cortVarious = ("max", "vsd", "blend", "ppt")
 
 dictFiles = {cortFolder: [], cortImage: [], cortVideo: [], cortText: [], cortMusic: [], cortVarious: []}
 
