@@ -2,15 +2,25 @@ import os
 import sys
 
 path = sys.argv[1]
-print(path)
-files = os.listdir(path)
+while True:
+    try:
+        files = os.listdir(path)
+    except NotADirectoryError:
+        path = input("\nReenter your directory, please ")
+        continue
+    except FileNotFoundError:
+        path = input("\nReenter your directory, please ")
+        continue
+    else:
+        break
+print(files)
 
 cortFolder = ("folder")
 cortImage = ("jpeg", "png", "jpg", "svg")
 cortVideo = ("avi", "mp4", "mov", "mpg")
 cortText = ("doc", "dcox", "txt", "odt")
 cortMusic = ("mp3", "ogg", "wav", "amr")
-cortVarious = ("max", "vsd", "blend", "ppt")
+cortVarious = ("max", "vsd", "blend", "")
 
 dictFiles = {cortFolder: [], cortImage: [], cortVideo: [], cortText: [], cortMusic: [], cortVarious: []}
 
@@ -68,10 +78,10 @@ while True:
                 print(f"\nList of music files ({key}) : {value}")
             elif key == cortVarious:
                 print(f"\nList of various files ({key}) : {value}")
-        input("\nPress any key to continue")
+        input("\nPress any key to exit")
         break
     elif find == "exit":
-        input("\nPress any key to continue")
+        input("\nPress any key to exit")
         break
     try:
         for value in dictFiles.get(key):
