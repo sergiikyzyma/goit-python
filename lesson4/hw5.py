@@ -3,14 +3,14 @@ import sys
 import pathlib
 
 def inputing(path = sys.argv[1]):
-    path = pathlib.Path(path)
     try:
-        listContain = os.listdir(path.absolute())
+        listContain = os.listdir(path)
     except NotADirectoryError:
         listContain = inputing(path = input("\nReenter your directory, please "))
     except FileNotFoundError:
         listContain = inputing(path = input("\nReenter your directory, please "))
-    return listContain
+    oldpath = path
+    return listContain, oldpath
 
 def outputing(dictFiles):
     os.system("clear")
@@ -36,20 +36,20 @@ def outputing(dictFiles):
         print(f"\nList of various files ({key[i]})\n")
     elif find == "all":
         for key, value in dictFiles.items():
-            print(f"\nList of contains ({key}) : {value}")
+            print(f"\nList of contains ({key}) : {value}\n")
     elif find == "exit":
         input("\nPress any key to exit")
         return None
     if find != "all":
         try:
             for value in dictFiles.get(key[i]):
-                print(value)
+                print(f"{value}\n")
         except NameError:
             print("\nYou maked the fail by inputing the command for search")
     input("\nPress any key to continue")
     outputing(dictFiles)
 
-def sorting(contains):
+def sorting(contains, oldpath):
     cortFolder = ("folder")
     cortImage = ("jpeg", "png", "jpg", "svg")
     cortVideo = ("avi", "mp4", "mov", "mpg")
@@ -77,16 +77,16 @@ def sorting(contains):
                     dictFiles[cortVarious].append(contain)
         else:
             dictFiles[cortFolder].append(contain)
-            sub_dir = inputing(path = contain)
-            dictFiles[cortFolder].append(sorting(sub_dir))
+            sub_dir, newpath = inputing(path = oldpath + "/" + contain)
+            dictFiles[cortFolder].append(sorting(sub_dir, newpath))
+            newpath = str(pathlib.Path(oldpath).parent)
     return dictFiles
 
 def main():
 
-    contains = inputing(path = "/home/teosoph/Стільниця/goit-python")
-    #contains = inputing()
+    contains, oldpath = inputing()
 
-    dictFiles = sorting(contains)
+    dictFiles = sorting(contains, oldpath)
 
     outputing(dictFiles)
 
