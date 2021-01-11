@@ -60,7 +60,7 @@ def sorting(contains, oldpath):
     dictFiles = {cortFolder: [], cortImage: [], cortVideo: [], cortText: [], cortMusic: [], cortVarious: []}
 
     for contain in contains:
-        if "." in contain:
+        if pathlib.Path(oldpath + "/" + contain).is_file():
             j = 0
             while not (contain.endswith(cortImage[j]) or contain.endswith(cortVideo[j]) or contain.endswith(cortText[j]) or contain.endswith(cortMusic[j]) or contain.endswith(cortVarious[j])):
                 j += 1
@@ -75,7 +75,7 @@ def sorting(contains, oldpath):
                     dictFiles[cortMusic].append(contain)
                 elif contain.endswith(cortVarious[j]):
                     dictFiles[cortVarious].append(contain)
-        else:
+        elif pathlib.Path(oldpath + "/" + contain).is_dir():
             dictFiles[cortFolder].append(contain)
             sub_dir, newpath = inputing(path = oldpath + "/" + contain)
             dictFiles[cortFolder].append(sorting(sub_dir, newpath))
