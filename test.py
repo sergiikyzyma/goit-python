@@ -82,7 +82,7 @@ for name in range(len(file_names)):
         print(names)
 correct_names = names.copy()
 print(correct_names)
-'''
+
 import os
 import sys
 
@@ -100,3 +100,21 @@ while True:
         break
 
 print(files)
+'''
+def func(*seqs):
+    result = 0
+    for i in range(len(seqs)):
+        if type(seqs[i]) == int or type(seqs[i]) == float:
+            result += seqs[i]
+        else:
+            print(seqs[i])
+    return result
+
+def custom_map(func, *seqs):
+    result = []
+    for j in range(len(seqs)):
+        print(seqs[j])
+    result.append(func(*seqs))
+    return result
+
+print("result = ", custom_map(func, 2, 3, 5, (-3, 34)))
