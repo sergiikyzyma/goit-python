@@ -15,6 +15,8 @@ def normalize(my_string):
         map_trans[ord(alphabet_ukr[index].upper())] = alphabet_ukr_eng[index].capitalize()
     for symbol in string.punctuation:
         map_trans[ord(symbol)] = "_"
+    for symbol in string.whitespace:
+        map_trans[ord(symbol)] = "_"
     
     my_string = my_string.translate(map_trans)
 
