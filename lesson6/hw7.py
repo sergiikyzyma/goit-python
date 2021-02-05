@@ -179,7 +179,7 @@ def main():
             creating_dir(oldpath)
             print("\n\tcopiring data (please wait) ... \n")
             recording(dictFiles, oldpath, oldpath)
-            print("\n\tdeleting folders with spaces (please wait) ... \n")
+            print("\n\tdeleting space folders (please wait) ... \n")
             deleting_space_dir(oldpath)
         elif answer == "exit":
             break
