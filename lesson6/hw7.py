@@ -65,9 +65,9 @@ def outputing(dictFiles):
 def sorting(contains, oldpath):
 
     dictFiles = {cortFolder: [], cortImage: [], cortVideo: [], cortText: [], cortMusic: [], cortArchive: [], cortVarious: []}
-
+    os.chdir(oldpath)
     for contain in contains:
-        if pathlib.Path(oldpath + "/" + contain).is_file():
+        if pathlib.Path(contain).is_file():
             j = 0
             while not (contain.endswith(cortImage[j]) or contain.endswith(cortVideo[j]) or contain.endswith(cortText[j]) or contain.endswith(cortMusic[j]) or contain.endswith(cortArchive[j]) or contain.endswith(cortVarious[j])):
                 j += 1
@@ -84,11 +84,11 @@ def sorting(contains, oldpath):
                     dictFiles[cortArchive].append(contain)
                 elif contain.endswith(cortVarious[j]):
                     dictFiles[cortVarious].append(contain)
-        elif pathlib.Path(oldpath + "/" + contain).is_dir():
+        elif pathlib.Path(contain).is_dir() and  not (contain == "images" or contain == "video" or contain == "documents" or contain == "audio" or contain == "archives" or contain == "other"):
             dictFiles[cortFolder].append(contain)
-            sub_dir, newpath = inputing(path = oldpath + "/" + contain)
+            sub_dir, newpath = inputing(path = pathlib.Path(contain).absolute())
             dictFiles[cortFolder].append(sorting(sub_dir, newpath))
-            newpath = str(pathlib.Path(oldpath).parent)
+            os.chdir(oldpath)
     return dictFiles
 
 def normalize(my_string):
@@ -112,7 +112,7 @@ def normalize(my_string):
 
     return my_string
 
-def searching(dictFiles, path_parent, path_destination):
+def recording(dictFiles, path_parent, path_destination):
     for key, lisf_of_files in dictFiles.items():
         new_dictFiles = dict()
         new_path = ""
@@ -144,7 +144,7 @@ def searching(dictFiles, path_parent, path_destination):
                     new_path = path_parent + "/" + a_file
                 elif type(a_file) == type(dict(a_file)):
                     new_dictFiles = a_file
-                    searching(new_dictFiles, new_path, path_destination)
+                    recording(new_dictFiles, new_path, path_destination)
 
 def creating_dir(path_destination):
     os.makedirs(f"{path_destination}/images", exist_ok = True)
@@ -154,6 +154,17 @@ def creating_dir(path_destination):
     os.makedirs(f"{path_destination}/archives", exist_ok = True)
     os.makedirs(f"{path_destination}/other", exist_ok = True)
 
+def deleting_space_dir(path_destination):
+    contains = os.listdir(path_destination)
+    if contains == []:
+        os.removedirs(path_destination)
+    else:
+        os.chdir(path_destination)
+    for contain in contains:
+        if pathlib.Path(contain).is_dir() and  not (contain == "images" or contain == "video" or contain == "documents" or contain == "audio" or contain == "archives" or contain == "other"):
+            deleting_space_dir(pathlib.Path(contain).absolute())
+            os.chdir(path_destination)
+
 def main():
 
     contains, oldpath = inputing()
@@ -161,15 +172,21 @@ def main():
     dictFiles = sorting(contains, oldpath)
 
     while True:
-        answer = input("\nif You wanna output the data on the screen or to record the data on the disk, enter please: 'screen' or the path on the disk\t")
+        answer = input("\nif You wanna output the data on the screen or to record the data on the disk, enter please: 'screen', 'disk' or 'exit'\t")
         if answer == "screen":
             outputing(dictFiles)
+        elif answer == "disk":
+            creating_dir(oldpath)
+            print("\n\tcopiring data (please wait) ... \n")
+            recording(dictFiles, oldpath, oldpath)
+            print("\n\tdeleting folders with spaces (please wait) ... \n")
+            deleting_space_dir(oldpath)
+        elif answer == "exit":
             break
-        elif pathlib.Path(answer).is_dir():
-            creating_dir(answer)
-            searching(dictFiles, oldpath, answer)
-            break
-        print("\nYou maked the fail, reenter please.")
+        else:
+            print("\nYou maked the fail, reenter please.")
+
+    print("\n\tWell done! Good luck You!\n")
 
 if __name__ == "__main__":
     main()
