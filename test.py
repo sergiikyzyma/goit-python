@@ -100,7 +100,7 @@ while True:
         break
 
 print(files)
-'''
+
 def func(*seqs):
     result = 0
     for i in range(len(seqs)):
@@ -118,3 +118,23 @@ def custom_map(func, *seqs):
     return result
 
 print("result = ", custom_map(func, 2, 3, 5, (-3, 34)))
+'''
+NAME = "Business District"
+URL = "Website"
+with open("2018_Seattle_Business_Districts.csv", "r") as fm:
+    with open("2018_Seattle_Business_Districts.html", "a") as html:
+        html.write("<html><head>2018_Seattle_Business_Districts</head><body><ul>")
+        header = []
+        for line in fm:
+            data = line.split(",")
+            data[-1] = data[-1][:-1]
+            if header == []:
+                header = data
+                name_index = header.index(NAME)
+                url_index = header.index(URL)
+                continue
+            name_data = data[name_index]
+            url_data = data[url_index]
+            print("\n", name_data, " ", url_data, "\n")
+            html.write(f"<li><a href='{url_data}'>{name_data}</a></li>")
+        html.write("</ul></body></html>")

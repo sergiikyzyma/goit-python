@@ -12,7 +12,8 @@ cortMusic = ("mp3", "ogg", "wav", "amr")
 cortArchive = ("zip", "eg", "tar", "gz")
 cortVarious = ("max", "vsd", "blend", "")
 
-def inputing(path = sys.argv[1]):
+#def inputing(path = sys.argv[1]):
+def inputing(path):
     try:
         listContain = os.listdir(path)
     except NotADirectoryError:
@@ -51,7 +52,7 @@ def outputing(dictFiles):
         for key, value in dictFiles.items():
             print(f"\nList of contains ({key}) : {value}\n")
     elif find == "exit":
-        input("\nPress any key to exit")
+        input("\nPress any key to outside")
         return None
     if find != "all":
         try:
@@ -112,7 +113,7 @@ def normalize(my_string):
 
     return my_string
 
-def recording(dictFiles, path_parent, path_destination):
+def copyring(dictFiles, path_parent, path_destination):
     for key, lisf_of_files in dictFiles.items():
         new_dictFiles = dict()
         new_path = ""
@@ -144,7 +145,42 @@ def recording(dictFiles, path_parent, path_destination):
                     new_path = path_parent + "/" + a_file
                 elif type(a_file) == type(dict(a_file)):
                     new_dictFiles = a_file
-                    recording(new_dictFiles, new_path, path_destination)
+                    copyring(new_dictFiles, new_path, path_destination)
+
+def moving(dictFiles, path_parent, path_destination):
+    for key, lisf_of_files in dictFiles.items():
+        new_dictFiles = dict()
+        new_path = ""
+        for a_file in lisf_of_files:
+            if key == cortImage:
+                os.chdir(f"{path_destination}/images")
+                new_file_name = a_file.rsplit(".", 1)
+                shutil.move(path_parent + "/" + a_file, normalize(new_file_name[0]) + "." + new_file_name[1])
+            if key == cortVideo:
+                os.chdir(f"{path_destination}/video")
+                new_file_name = a_file.rsplit(".", 1)
+                shutil.move(path_parent + "/" + a_file, normalize(new_file_name[0]) + "." + new_file_name[1])
+            if key == cortText:
+                os.chdir(f"{path_destination}/documents")
+                new_file_name = a_file.rsplit(".", 1)
+                shutil.move(path_parent + "/" + a_file, normalize(new_file_name[0]) + "." + new_file_name[1])
+            if key == cortMusic:
+                os.chdir(f"{path_destination}/audio")
+                new_file_name = a_file.rsplit(".", 1)
+                shutil.move(path_parent + "/" + a_file, normalize(new_file_name[0]) + "." + new_file_name[1])
+            if key == cortArchive:
+                new_file_name = a_file.rsplit(".", 1)
+                shutil.unpack_archive(path_parent + "/" + a_file, path_destination + "/archives/" + normalize(new_file_name[0]))
+                os.remove(path_parent + "/" + a_file)
+            if key == cortVarious:
+                os.chdir(f"{path_destination}/other")
+                shutil.move(path_parent + "/" + a_file, a_file)
+            if key == cortFolder:
+                if type(a_file) == type(str(a_file)):
+                    new_path = path_parent + "/" + a_file
+                elif type(a_file) == type(dict(a_file)):
+                    new_dictFiles = a_file
+                    moving(new_dictFiles, new_path, path_destination)
 
 def creating_dir(path_destination):
     os.makedirs(f"{path_destination}/images", exist_ok = True)
@@ -163,22 +199,29 @@ def deleting_space_dir(path_destination):
     for contain in contains:
         if pathlib.Path(contain).is_dir() and  not (contain == "images" or contain == "video" or contain == "documents" or contain == "audio" or contain == "archives" or contain == "other"):
             deleting_space_dir(pathlib.Path(contain).absolute())
-            os.chdir(path_destination)
+            if pathlib.Path(path_destination).exists():
+                os.chdir(path_destination)
 
 def main():
 
-    contains, oldpath = inputing()
+    contains, oldpath = inputing("/media/teosoph/Data/Квартира")
 
     dictFiles = sorting(contains, oldpath)
 
     while True:
-        answer = input("\nif You wanna output the data on the screen or to record the data on the disk, enter please: 'screen', 'disk' or 'exit'\t")
+        answer = input("\nif You wanna output the data on the screen or to record the data on the disk, enter please: 'screen', 'copy', 'move' or 'exit'\t")
         if answer == "screen":
             outputing(dictFiles)
-        elif answer == "disk":
+        elif answer == "copy":
             creating_dir(oldpath)
-            print("\n\tcopiring data (please wait) ... \n")
-            recording(dictFiles, oldpath, oldpath)
+            print("\n\tcopyring data (please wait) ... \n")
+            copyring(dictFiles, oldpath, oldpath)
+            print("\n\tdeleting space folders (please wait) ... \n")
+            deleting_space_dir(oldpath)
+        elif answer == "move":
+            creating_dir(oldpath)
+            print("\n\tmoving data (please wait) ... \n")
+            moving(dictFiles, oldpath, oldpath)
             print("\n\tdeleting space folders (please wait) ... \n")
             deleting_space_dir(oldpath)
         elif answer == "exit":
