@@ -1,3 +1,4 @@
 [console_scripts]
+clean = clean_folder.clean:main
 clean-folder = clean_folder.__main__:main
 
