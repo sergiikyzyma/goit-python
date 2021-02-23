@@ -256,6 +256,7 @@ def comments_to_show(comment_dict={}):
 print(comments_to_show({"vdgfg": 23, "cnjdn": 34, "av": 3, "23": 7, "nmnm": 9}))
 """
 
+
 def translate_surnames(surnames):
     alphabet_rus = ("а", "б", "е", "и", "к", "о", "р", "н", "т", "с", "л")
     alphabet = ("a", "b", "e", "i", "k", "o", "r", "n", "t", "s", "l")
@@ -265,7 +266,10 @@ def translate_surnames(surnames):
         map[ord(alphabet_rus[i].upper())] = alphabet[i].capitalize()
     name = surnames.translate(map)
     return name
+
+
 print(translate_surnames("Сергей"))
+
 
 def formatted_comments(comments_dict):
     new_comment = []
@@ -273,9 +277,13 @@ def formatted_comments(comments_dict):
         new_comment.append("|{:^20}|{:>20}|".format(comment[0], comment[1]))
         print("|{:^20}|{:>20}|".format(comment[0], comment[1]))
     return new_comment
+
+
 formatted_comments({"Nice service": 100, "Polite waitresses": 39, "Delicious food": 80})
 
 import re
+
+
 def structure_recipe(order):
     # res = re.sub(("\d"), " ", recipe)
     # result = re.sub((";"), "\n", res)
@@ -287,4 +295,79 @@ def structure_recipe(order):
         i += 1
     print(i, " ", res)
     return summa
+
+
 print(structure_recipe("dheud37r6: 7473t46;dheud37r6: 743t46;dheud37r6: 773t46;"))
+
+
+def file_operations(path, additional_info, start_pos, count_chars):
+    with open(path, "a") as fh:
+        fh.write(additional_info)
+    with open(path, "r") as fd:
+        fd.seek(start_pos)
+        result = fd.readline(count_chars)
+    return result
+
+
+print(file_operations("text.txt", "Ich liebe dich!!!", 5, 7))
+
+
+def flatten(data):
+    if data == []:
+        return []
+    temp = []
+    if type(data[0]) == list:
+        first = flatten(data[0])
+        second = flatten(data[1:])
+        return first + second
+    else:
+        temp.append(data[0])
+        first = temp
+        second = flatten(data[1:])
+        return first + second
+
+
+print(flatten([1, 2, [3, 4, [5, 6]], 7]))
+
+
+def decode(data):
+    res = []
+    count = len(data)
+    if data == []:
+        return []
+    elem1 = data[0::2]
+    elem2 = data[1::2]
+    for _ in range(elem2[0]):
+        res.append(elem1[0])
+    else:
+        res += decode(data[2:])
+    if data[count:] == []:
+        return res
+
+
+print(decode(["X", 3, "Z", 2, "X", 2, "Y", 3, "Z", 2]))
+
+
+def encode(data):
+    temp, temp_count = [], 0
+    count = len(data)
+    if data == []:
+        return []
+    while len(data[temp_count:]) != 0:
+        if len(data) == 1:
+            temp_count += 1
+            break
+        if temp_count == 0:
+            temp_count += 1
+        if data[temp_count - 1] == data[temp_count]:
+            temp_count += 1
+        else:
+            break
+    temp.append(data[temp_count - 1])
+    temp.append(temp_count)
+    temp += encode(data[temp_count:])
+    if data[count:] == []:
+        return temp
+
+
+print(encode(["X", "X", "X", "Z", "Z", "X", "X", "Y", "Y", "Y", "Z", "Z"]))
