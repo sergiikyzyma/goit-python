@@ -1,8 +1,5 @@
 import re
 
-def input_error():
-    pass
-
 def hello():
     return "How can I help you?"
 
@@ -65,7 +62,8 @@ def handler(func, *arg):
 def main():
     adress_book = dict()
     result = ""
-
+    
+    print("{:>20}{:<300}".format("Your assistent: ", "Hello"))
     while result != "Good bye!":
         command = input("{:>20}".format("User: "))
         com = command.lower().split(" ")
