@@ -1,4 +1,5 @@
 import sys
+from collections import UserDict
 
 """
 import string
@@ -196,14 +197,14 @@ def shift_variations_count(workers_list, shift_count):
     print(workers_list," ", n, " ", shift_count)
     return math.factorial(n) / (math.factorial(shift_count) * math.factorial(n - shift_count))
 print(shift_variations_count(surnames_statistic_list, 3))
-"""
+
 lines = ["Central 6000", "Centra 600", "Centr 60", "tral 12000", "Ceral 16000"]
 summa = 0
 for _ in lines:
     line = _.split()
     summa += float(line[1])
 print(summa)
-"""
+
 orders = ["Big chicken:active", "Big:active", "chicken:active"]        
 fh = open("text.txt", "a")
 for order in orders:
@@ -254,7 +255,6 @@ def comments_to_show(comment_dict={}):
     return result
 
 print(comments_to_show({"vdgfg": 23, "cnjdn": 34, "av": 3, "23": 7, "nmnm": 9}))
-"""
 
 
 def translate_surnames(surnames):
@@ -371,3 +371,30 @@ def encode(data):
 
 
 print(encode(["X", "X", "X", "Z", "Z", "X", "X", "Y", "Y", "Y", "Z", "Z"]))
+"""
+
+
+class A(UserDict):
+    def __init__(self):
+        self.name = "aaa"
+        self.phone = [123]
+
+
+class B(A):
+    def __init__(self):
+        self.name = "bbb"
+        self.phone = [345]
+        self.data = {}
+
+    def func(self, name, phone):
+        self.name = "petia"
+        self.phone.append(phone)
+        self.data[self.name] = self.phone
+        self.data[name] = self.phone
+
+
+my1 = A()
+my2 = B()
+print(my1.name, " ", my1.phone, " ", my2.name, " ", my2.phone)
+my2.func("vasia", 5747564785)
+print(my1.name, " ", my1.phone, " ", my2.name, " ", my2.phone, " ", my2)
