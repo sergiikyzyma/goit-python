@@ -72,6 +72,7 @@ def parser(com, my_adressbook):
         "find": my_adressbook.findall,
         "hello": my_adressbook.hello,
         "help": my_adressbook.help,
+        "name": my_adressbook.findname,
         "phone": my_adressbook.findphone,
         "birthday": my_adressbook.findbirthday,
         "show all": my_adressbook.showall,
@@ -86,8 +87,9 @@ def parser(com, my_adressbook):
         "find": "<second_key (all, phone, birthday)> <name>",
         "hello": "<nothing>",
         "help": "<nothing>",
-        "phone": "<phone-number>",
-        "birthday": "<date of birthday>",
+        "name": "<part or full name>",
+        "phone": "<part or full phone-number>",
+        "birthday": "<part or full date of birthday>",
         "show all": "<nothing>",
         "exit": "<nothing>",
         "close": "<nothing>",
@@ -113,6 +115,8 @@ def parser(com, my_adressbook):
         result = commands[com[0]]()
     elif com[0] == "help":
         result = commands[com[0]](commands, arguments)
+    elif com[0] == "name":
+        result = commands[com[0]](com[1])
     elif com[0] == "phone":
         result = commands[com[0]](com[1])
     elif com[0] == "birthday":
@@ -329,6 +333,16 @@ class Record(Name, Phone, Birthday):
         for command in commands.keys():
             result += "\n\t\t\t" + str(command) + " " + str(arguments[command])
         return result
+
+    def findname(self, name):
+        result = ""
+        for elem in self.data.keys():
+            if re.findall(name, elem):
+                result += "\n\t\t\t" + str(elem) + " " + str(self.data[elem])
+        if result:
+            return result
+        else:
+            raise NameError3
 
     def findphone(self, phone):
         result = ""
