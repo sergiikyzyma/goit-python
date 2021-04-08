@@ -347,12 +347,12 @@ def decode(data):
 
 print(decode(["X", 3, "Z", 2, "X", 2, "Y", 3, "Z", 2]))
 
-
 def encode(data):
-    temp, temp_count = [], 0
-    count = len(data)
+    temp, temp_count, count = [], 0, len(data)
     if data == []:
         return []
+    if data == [""]:
+        return 0
     while len(data[temp_count:]) != 0:
         if len(data) == 1:
             temp_count += 1
@@ -369,10 +369,17 @@ def encode(data):
     if data[count:] == []:
         return temp
 
+def encode(data):
+    if len(data) == 0:
+        return []
+    index = 1
+    while index < len(data) and data[index] == data[index - 1]:
+        index = index + 1
+    current = [data[0], index]
+    return current + encode(data[index : len(data)])
+
 
 print(encode(["X", "X", "X", "Z", "Z", "X", "X", "Y", "Y", "Y", "Z", "Z"]))
-"""
-
 
 class A(UserDict):
     def __init__(self):
@@ -398,3 +405,332 @@ my2 = B()
 print(my1.name, " ", my1.phone, " ", my2.name, " ", my2.phone)
 my2.func("vasia", 5747564785)
 print(my1.name, " ", my1.phone, " ", my2.name, " ", my2.phone, " ", my2)
+
+from datetime import datetime
+from datetime import timedelta
+
+
+def get_days_from_today(date):
+    date_list = date.split("-")
+    date_value = datetime(
+        year=int(date_list[0]), month=int(date_list[1]), day=int(date_list[2])
+    )
+    delta = timedelta(weeks=5)
+    time_delta = datetime.now().date() - date_value.date()
+    return (time_delta - delta).days
+
+
+print(get_days_from_today("2021-10-09"))
+
+import random
+
+
+def random_winners(count, user_dict):
+    names = list(user_dict.keys())
+    if count <= len(names):
+        random.shuffle(names)
+        return random.sample(names, count)
+    else:
+        return "Error"
+
+
+print(random_winners(2, {"Spielberg": 8000, "Bosh": 1200, "Khamraev": 11000}))
+
+import collections
+
+
+def to_named(tup):
+    Person = collections.namedtuple(
+        "Person", ["id", "surname", "discount", "city", "age"]
+    )
+    person = Person(tup["id"], tup["surname"], tup["discount"], tup["city"], tup["age"])
+    return person
+
+
+print(
+    to_named(
+        {"id": 12, "surname": "Ivanov", "discount": 23, "city": "Kijow", "age": 35}
+    )
+)
+
+import collections
+
+
+def count_activity(clients_activity):
+    clients = []
+    for activity in clients_activity:
+        clients.extend(activity)
+    dict_clients = collections.Counter(clients)
+    return dict_clients.most_common(3)
+
+
+print(
+    count_activity(
+        [["Edvardson", "Damriel", "Mbape", "Columb"], ["Edvardson", "Mbape", "Mbape"]]
+    )
+)
+
+from collections import deque
+
+
+def form_deque(clients_id, max_len):
+    q = deque(maxlen=max_len)
+    for client_id in clients_id:
+        q.append(client_id)
+    while q[0] % 2:
+        elem = q.popleft()
+        q.append(elem)
+
+    return q
+
+
+qqq = [101, 202, 363, 104, 205, 306, 107, 268, 309, 410]
+random.shuffle(qqq)
+print(form_deque(qqq, 5))
+
+
+def modify_lists(list_for_dict, pow_dict, list_for_list, add_num):
+    my_dict = {i: i ** pow_dict for i in list_for_dict}
+    my_list = [i + add_num for i in list_for_list]
+    return (my_dict, my_list)
+
+
+print(modify_lists([1, 2, 3], 3, [1, 2, 3], 3))
+
+
+def caching():
+    cache = {}
+
+    def inner(n):
+        cache[0] = 1
+        cache[1] = 1
+        if not n in cache.keys():
+            res = inner(n - 1) + inner(n - 2)
+            cache[n] = res
+        print(cache)
+        return cache[n]
+
+    return inner
+
+
+print(caching()(3))
+
+
+def discount_carr(discount):
+    def real_cost(cost):
+        return cost - (cost * discount)
+
+    return real_cost
+
+
+my = discount_carr(0.1)
+print(my(450))
+
+
+def generator_string(str=""):
+
+    for ch in str:
+        try:
+            ch = int(ch)
+        except Exception:
+            yield 0
+        else:
+            yield ch
+
+
+def sum(str):
+    summa = 0
+    for s in generator_string(str):
+        summa += s
+    return summa
+
+
+print(sum("Ivanov 124 with 3-year experience and 24 dollars in pocket"))
+
+
+def filter_letters(surnames_list):
+    new_list = []
+    for surnames in surnames_list:
+        for j in filter(lambda x: x.isnumeric(), surnames):
+            surnames = surnames.replace(j, "")
+        new_list.append(surnames)
+    return new_list
+
+
+print(filter_letters(["Ed5ard4on", "Da2riel", "Mb1pe", "Col9m0"]))
+
+
+class Employees:
+    def __init__(self, surnames, group):
+        self.employees_dict = {}
+        for index, surname in enumerate(surnames):
+            self.employees_dict[index] = surname
+        self.group = group
+
+    def __setitem__(self, key, value):
+        self.employees_dict[key] = value
+
+    def __getitem__(self, item):
+        return self.employees_dict[item]
+
+
+managers = Employees(["Edvardson", "Damriel", "Mbape", "Columb"], "managers")
+print(managers.employees_dict, " ", managers.group)
+
+
+class Client:
+    def __init__(self, client_list, discount):
+        self.client_list = client_list
+        self.discount = discount
+        self.current_client = 0
+
+    def __next__(self):
+        if self.current_client < len(self.client_list):
+            self.current_client += 1
+            return self.client_list[self.current_client - 1]
+        raise StopIteration
+
+    def __iter__(self):
+        return self
+
+
+for elem in Client(["Edvardson", "Damriel", "Mbape", "Columb"], 0.1):
+    print(elem)
+
+from copy import deepcopy
+
+
+class FoodComponent:
+    def __init__(self, product_names, weight, price):
+        self.product_names = product_names
+        self.weight = weight
+        self.price = price
+
+    def __str__(self):
+        return f"Product {str(self.product_names)}, weight = {self.weight}, price = {self.price}"
+
+    def __add__(self, other):
+        my1 = copy(self)
+        my1.product_names = self.product_names + " " + other.product_names
+        my1.weight = self.weight + other.weight
+        my1.price = self.price + other.price
+        return my1
+
+    def __sub__(self, other):
+
+        my2 = copy(self)
+        if self.product_names.find(other.product_names) != -1:
+            my2.product_names = self.product_names.replace(other.product_names, "")
+            my2.weight = self.weight - other.weight
+            my2.price = self.price - other.price
+            return my2
+        else:
+            return self
+
+my_recipe_1 = FoodComponent("cheese", 23, 78)
+my_recipe_2 = FoodComponent("tomate", 35, 45)
+my_recipe_3 = FoodComponent("sparsza", 5, 4)
+my_recipe_4 = FoodComponent("fish red", 35, 450)
+my_recipe_5 = my_recipe_1 + my_recipe_2 + my_recipe_3 + my_recipe_4
+my_recipe_6 = my_recipe_5 - my_recipe_2
+print(my_recipe_1, " ", my_recipe_2, " ", my_recipe_5, " ", my_recipe_6)
+
+class FoodComponent:
+    def __init__(self, product_names, weight, price):
+        self.product_names = product_names
+        self.weight = weight
+        self.price = price
+
+    def __str__(self):
+        return f"Product {str(self.product_names)}, weight = {self.weight}, price = {self.price}"
+
+    def __add__(self, other):
+        my1 = deepcopy(self)
+        my1.product_names += other.product_names
+        my1.weight += other.weight
+        my1.price += other.price
+        return my1
+
+    def __sub__(self, other):
+        my2 = deepcopy(self)
+        for product_name in other.product_names:
+            if product_name in my2.product_names:
+                my2.product_names.remove(product_name)
+                my2.weight -= other.weight
+                my2.price -= other.price
+                return my2
+        return self
+
+
+my_recipe_1 = FoodComponent(["cheese"], 23, 78)
+my_recipe_2 = FoodComponent(["tomate"], 35, 45)
+my_recipe_3 = FoodComponent(["sparsza"], 5, 4)
+my_recipe_4 = FoodComponent(["fish red"], 35, 450)
+my_recipe_5 = my_recipe_1 + my_recipe_2 + my_recipe_3 + my_recipe_4
+my_recipe_6 = my_recipe_5 - my_recipe_4 - my_recipe_3
+print(my_recipe_1, " ", my_recipe_2, " ", my_recipe_5, " ", my_recipe_6)
+"""
+import re
+
+
+def total_price(order):
+    s = 0
+    my_order = re.findall("[: ]\d+", order)
+    for i in my_order:
+        s += int(i)
+    return s
+
+
+print(total_price("Название_1: 1 Название_2: 5 Название_3: 7"))
+import re
+
+
+def find_password(passwords):
+    password = re.search("[a-zA-Z]{5}[0-9]{5}", passwords)
+    return password.group()
+
+
+print(find_password("abcde12345vbdhvbhd47ty74"))
+
+from copy import deepcopy, copy
+
+
+class Customer:
+    def __init__(self, surname, id, attributes):
+        self.surname = surname
+        self.id = id
+        self.attributes = attributes
+
+    def __eq__(self, other):
+        if self.surname == other.surname and self.id == other.id:
+            return True
+        return False
+
+    def __getstate__(self):
+        attributes = self.__dict__.copy()
+        attributes["id"] *= 4
+        return attributes
+
+    def __setstate__(self, state):
+        self.__dict__ = state
+        self.id /= 4
+
+    def __copy__(self):
+        copy_surname = copy(self.surname)
+        copy_id = copy(self.id)
+        copy_attributes = copy(self.attributes)
+        copy_obj = Customer(copy_surname, copy_id, copy_attributes)
+        return copy_obj
+
+    def __deepcopy__(self):
+        copy_obj = deepcopy(Customer(self.surname, self.id, self.attributes))
+        return copy_obj
+
+
+def create_incremented_customer(customer):
+    new_customer = customer.__deepcopy__()
+    new_customer.id += 1
+    return new_customer
+
+
+print(create_incremented_customer(Customer("Ivaniv", 111, "age:31, phone:1435435")))
