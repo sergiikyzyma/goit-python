@@ -1,6 +1,8 @@
 from collections import UserDict
 from datetime import datetime
 from datetime import timedelta
+import clean
+import os
 import pathlib
 import pickle
 import re
@@ -33,6 +35,9 @@ class NameError6(Exception):
 class NameError7(Exception):
     pass
 
+class NameError8(Exception):
+    pass
+
 
 def input_error(func):
     def inner(adress_book, com):
@@ -47,6 +52,7 @@ def input_error(func):
         my_error_9 = "Date of birthday in database is not exiest yet!"
         my_error_10 = "E-mail in database is not exiest yet!"
         my_error_11 = "Address of living in database is not exiest yet!"
+        my_error_12 = "You maked the fail by inputing the path to the folder!"
         try:
             res = func(adress_book, com)
         except KeyError:
@@ -71,6 +77,8 @@ def input_error(func):
             return my_error_10
         except NameError7:
             return my_error_11
+        except NameError8:
+            return my_error_12
         else:
             return res
 
@@ -95,6 +103,7 @@ def parser(com, my_adressbook):
         "exit": my_adressbook.ausgang,
         "close": my_adressbook.ausgang,
         "good bye": my_adressbook.ausgang,
+        "clean":clean.main,
     }
     arguments = {
         "add": "<name> <value>",
@@ -112,6 +121,7 @@ def parser(com, my_adressbook):
         "exit": "<nothing>",
         "close": "<nothing>",
         "good bye": "<nothing>",
+        "clean":"<the path to the folder for cleaning>",
     }
 
     if com[0] == "exit" or com[0] == "close":
@@ -123,6 +133,14 @@ def parser(com, my_adressbook):
             raise NameError1
     elif com[0] == "add":
         result = commands[com[0]](com[1], com[2])
+    elif com[0] == "clean":
+        if pathlib.Path(com[1]).is_dir():
+            temp = os.getcwd()
+            commands[com[0]](com[1])
+            os.chdir(temp)
+            result = "This folder was sorted and cleaned"
+        else:
+            raise NameError8
     elif com[0] == "change":
         result = commands[com[0]](com[1], com[2], com[3])
     elif com[0] == "delete":
@@ -555,7 +573,10 @@ def main():
         if key == "" in my_record.data.keys():
             my_record.data.pop(key)
         command = input("{:>20}".format("User: "))
-        com = command.lower().split(" ")
+        if command.split(" ")[0] == "clean":
+            com = command.split(" ")
+        else:
+            com = command.lower().split(" ")
         result = parser(com, my_record)
         print("{:>20}{:<300}".format("Your assistent: ", result))
 

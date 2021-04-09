@@ -1,4 +1,6 @@
 import sys
+import pathlib
+import os
 from collections import UserDict
 
 """
@@ -669,7 +671,7 @@ my_recipe_4 = FoodComponent(["fish red"], 35, 450)
 my_recipe_5 = my_recipe_1 + my_recipe_2 + my_recipe_3 + my_recipe_4
 my_recipe_6 = my_recipe_5 - my_recipe_4 - my_recipe_3
 print(my_recipe_1, " ", my_recipe_2, " ", my_recipe_5, " ", my_recipe_6)
-"""
+
 import re
 
 
@@ -734,3 +736,7 @@ def create_incremented_customer(customer):
 
 
 print(create_incremented_customer(Customer("Ivaniv", 111, "age:31, phone:1435435")))
+"""
+temp = os.getcwd()
+print(temp)
+os.chdir(temp)
