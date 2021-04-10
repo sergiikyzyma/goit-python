@@ -740,3 +740,9 @@ print(create_incremented_customer(Customer("Ivaniv", 111, "age:31, phone:1435435
 temp = os.getcwd()
 print(temp)
 os.chdir(temp)
+qqq = "Bye by my friend"
+temp = ["Bye by", "Exit", "Thank you", "That`s all"]
+for i in temp:
+    print(qqq.startswith(i))
+    print(qqq.split(i)[0], "    ", qqq)
+    input()
