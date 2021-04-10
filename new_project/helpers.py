@@ -1,53 +1,20 @@
 import random
 
-
-def get_failure_phrase():
-    phrases = BOT_HANDLERS['failure_phrases']
-    return random.choice(phrases)
-
-
-def filter_text(text):
-    text = text.lower()
-    text = [c for c in text if c in 'abcdefghijklmnopqrstuvyzxw']
-    text = ''.join(text)
-    return text
-
-
-def get_intent(question):
-    for intent, intent_data in BOT_HANDLERS['intents'].items():
-        for example in intent_data['examples']:
-            if filter_text(question) in filter_text(example):
-                return intent
-
-
-def get_answer_by_intent(intent):
-    if intent in BOT_HANDLERS['intents']:
-        phrases = BOT_HANDLERS['intents'][intent]['responses']
-        return random.choice(phrases)
-
-
-def get_action(question):
-    action_d = ['showme', 'addcontact', 'changebirthday', 'addbirthday', 'changephone', 'showall', 'find', 'birthday', 'addphone', 'removephone', 'removecontact']
-    for action, action_data in BOT_HANDLERS['actions'].items():
-        for example in action_data['examples']:
-            for i in action_d:
-                if filter_text(question).find(filter_text(i)) != -1:
-                    action = i
-                    return action
-
-
+INTENTS = ["exit", "help", "hello", "show"]
+ACTIONS = ["clean", "add", "change", "delete", "find", "name", "phone", "birthday", "address"]
+    
 BOT_HANDLERS = {
     'intents': {
         'exit': {
-            'examples':['Bye', 'Exit', 'Thank you', "That`s all"],
+            'examples':['bye', 'exit', 'thank you', "that`s all"],
             'responses':['Bye', 'Have a nice day', 'It was pleasure to help you']
         },
         'hello': {
-            'examples':['Hi', 'Hello'],
+            'examples':['hi', 'hello'],
             'responses':['Hi. How could I help you?', 'Hello. What do you want, guy?', 'Good day. I ready to help you']
         },
         'help': {
-            'examples':['Help', 'need help', 'help me'],
+            'examples':['help', 'need help', 'help me'],
             'responses':["""
                         My name is Addy and I am your AddressBook assistant.
                         I was created to help you fill out your address book.
@@ -55,22 +22,23 @@ BOT_HANDLERS = {
                         contact's name, phone numbers, and the contact's birthday, for now.
                         Together, we can expand it.
                         Below you will find all the commands that I can perform for you:
-                        1. show all - I'll show you the whole addressbook
-                        2. show me {number} - I'll show you the {number} contacts from the addressbook
-                        3. add contact John 44123456789 birthday=01/01/2000 - I'll add the new contact to you addressbook
-                        4. add phone 48123456789 John - I'll add the new phone to the contact
-                        5. add birthday John 01/01/2000 - I'll add birth day to the contact
-                        6. remove contact John - I'll remove the contact with all data about him
-                        7. remove phone 48123456789 John - I'll remove the phone from the contact
-                        8. change phone John 1 48123456789 - I'll change the first phone of the contact on new one
-                        9. change birthday John 01/01/2000 - I'll change birth day of the contact
-                        10. birthday John - I'll show you - I'll show you in how many days the contact's birthday will be.
-                        11. find {} - search through the contents of the contact book. I will show you all the
-                        information about one or more users by a few digits of the phone number or letters of the name                       
+                        1. show all - I'll show you the whole addressbook and all information about all users
+                        2. name, phone, birthday, email or address {value} - I'll show you the {value} contacts from the addressbook
+                        about one or more users by a few digits of the phone number or letters of the name
+                        3. add John 481-234-56-78 - I'll add the new contact {name} and {phone, birthday, email or address} to you addressbook
+                        4. remove contact John 481-234-56-78 - I'll remove the phone from the contact
+                        5. remove contact John 04-04-1978 - I'll remove the birthday from the contact
+                        6. change contact John 481-234-56-78 481-234-56-79 - I'll change the first phone of the contact on new one
+                        7. change contact John 04-04-1978 04-04-1979 - I'll change the first birthday of the contact on new one
+                        8. find phone John - I'll show you - I'll show you phone and in how many days the contact's birthday will be.
+                        9. find birthday John - I'll show you - I'll show you in how many days the contact's birthday will be.
+                        10. find email John - I'll show you - I'll show you email and in how many days the contact's birthday will be.
+                        11. find address John - I'll show you - I'll show you address and in how many days the contact's birthday will be.
+                        12. find all John - search through the contents of the contact book. I will show you all the information about one user
                         """]
         },
         'show': {
-            'examples':['show all', 'Could you show all the contacts', 'Please, show all the contacts'],
+            'examples':['show all', 'could you show all the contacts', 'please, show all the contacts', 'showall'],
             'responses':['OK', 'Look here', 'Sure', 'You got it']
         },
     },
@@ -80,15 +48,15 @@ BOT_HANDLERS = {
             'responses':['Sure', 'I can find it', 'Of course']
         },
         'add': {
-            'examples':['add contact', 'Could you add the name', 'Please, add the one name', 'add'],
+            'examples':['add contact', 'could you add the name', 'please, add the one name', 'add'],
             'responses':['OK', 'No problem', 'I got it']
         },
         'change': {
-            'examples':['Change contact', 'change', 'Could you change phone'],
+            'examples':['change contact', 'change', 'could you change phone'],
             'responses':['Yes, Sir', 'I can do it', 'Never give up']
         },
         'delete': {
-            'examples':['Remove contact', 'delete'],
+            'examples':['remove contact', 'delete'],
             'responses':['OK', 'No problem', 'I got it']
         },
         'find': {
@@ -96,23 +64,23 @@ BOT_HANDLERS = {
             'responses':['Sure', 'I can find it', 'Of course']
         },
         'name': {
-            'examples':['name', 'show me', 'Could you show me some', 'Please, show me'],
+            'examples':['name', 'show me contacts', 'could you show me some contacts', 'please, show me contacts'],
             'responses':['OK', 'Look here', 'Sure', 'You got it']
         },
         'phone': {
-            'examples':['phone', 'show me', 'Could you show me some', 'Please, show me'],
+            'examples':['phone', 'show me phone', 'could you show me some phone', 'please, show me phone'],
             'responses':['OK', 'Look here', 'Sure', 'You got it']
         },
         'birthday': {
-            'examples':['birthday', 'show me', 'Could you show me some', 'Please, show me'],
+            'examples':['birthday', 'show me birthday', 'could you show me some birthday', 'please, show me birthday'],
             'responses':['OK', 'Look here', 'Sure', 'You got it']
         },
         'email': {
-            'examples':['email', 'show me', 'Could you show me some', 'Please, show me'],
+            'examples':['email', 'show me email', 'could you show me some email', 'please, show me email'],
             'responses':['OK', 'Look here', 'Sure', 'You got it']
         },
         'address': {
-            'examples':['address', 'show me', 'Could you show me some', 'Please, show me'],
+            'examples':['address', 'show me address', 'could you show me some address', 'please, show me address'],
             'responses':['OK', 'Look here', 'Sure', 'You got it']
         },
     },
@@ -125,5 +93,3 @@ BOT_HANDLERS = {
         "Выспись",
         ]
     }
-
-

@@ -1,4 +1,4 @@
-from helpers import BOT_HANDLERS, filter_text, get_intent, get_action, get_answer_by_intent
+from helpers import BOT_HANDLERS, INTENTS, ACTIONS
 from collections import UserDict
 from datetime import datetime
 from datetime import timedelta
@@ -125,8 +125,6 @@ def parser(com, arg, my_adressbook):
         "email": "<part or full email>",
         "address": "<part or full address>",
     }
-    print(com, "    ", arg)
-    input()
     #--------------------intents--------------------
     if com in BOT_HANDLERS["intents"]["exit"]["examples"]:
         result = commands["exit"]()
@@ -163,22 +161,20 @@ def parser(com, arg, my_adressbook):
         result = commands["email"](arg[0])
     elif com in BOT_HANDLERS["actions"]["address"]["examples"]:
         result = commands["address"](arg[0])
+    elif com in BOT_HANDLERS["failure_phrases"]:
+        result = random.choice(BOT_HANDLERS['failure_phrases'])
     return result
 
 def split_command(com):
-    intents = ["exit", "help", "hello", "show"]
-    actions = ["clean", "add", "change", "delete", "find", "name", "phone", "birthday", "address"]
-    for intent in intents:
+    for intent in INTENTS:
         for example in BOT_HANDLERS["intents"][intent]["examples"]:
-            example = example.lower()
             if re.match(example, com):
                 return example, com.split(example)[0].strip()
-    for action in actions:
+    for action in ACTIONS:
         for example in BOT_HANDLERS["actions"][action]["examples"]:
-            example = example.lower()
             if re.match(example, com):
                 return example, com.split(example)[1].strip()
-    return "Error", "Error"
+    return 'failure_phrases', random.choice(BOT_HANDLERS['failure_phrases'])
 
 class Adressbook(UserDict):
     def add_Record(self, name, value, type_value="phone"):
@@ -486,7 +482,7 @@ class Record(Name, Phone, Birthday, Email, Address):
                 result += "\n\t\t\t" + str(next(self.iterator()))
             except KeyError:
                 self.data = pickle.loads(serialized_data)
-                answer = random.choice(BOT_HANDLERS["actions"]["showall"]["responses"])
+                answer = random.choice(BOT_HANDLERS["intents"]["show"]["responses"])
                 return answer + " " + result
 
     def ausgang(self):
@@ -506,24 +502,6 @@ class Record(Name, Phone, Birthday, Email, Address):
         else:
             result = (oldyear - date_now) + (date_birthday - newyear)
         return result.days
-
-    def bot(self, question):
-        intent = get_intent(question)
-        action = get_action(question)
-
-        # finding ready answer
-        if intent:
-            answer = get_answer_by_intent(intent)
-            if answer:
-                return answer
-                
-        answer = get_answer_by_action(action, question)
-        if answer:
-            return answer
-        
-        # any answer
-        answer = get_failure_phrase()
-        return answer
 
     def help(self, commands, arguments):
         result = "You can to write next commands for working with me:"
