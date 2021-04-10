@@ -1,7 +1,8 @@
 import random
 
 INTENTS = ["exit", "help", "hello", "show"]
-ACTIONS = ["clean", "add", "change", "delete", "find", "name", "phone", "birthday", "address", "peaple"]
+ACTIONS = ["clean", "add",  "addnotes", "change", "delete", "find", "name", "phone", "birthday", "address", "peaple"]
+TAGS = ["raider", "elergy", "special"]
     
 BOT_HANDLERS = {
     'intents': {
@@ -36,6 +37,7 @@ BOT_HANDLERS = {
                         11. find address John - I'll show you - I'll show you address and in how many days the contact's birthday will be.
                         12. find all John - search through the contents of the contact book. I will show you all the information about one user
                         13. peaple {number} - search peaple, who birth for {number} days
+                        14. add {name} {tag} {note} - adding note by tag
                         """]
         },
         'show': {
@@ -49,7 +51,11 @@ BOT_HANDLERS = {
             'responses':['Sure', 'I can find it', 'Of course']
         },
         'add': {
-            'examples':['add contact', 'could you add the name', 'please, add the one name', 'add'],
+            'examples':['add contact','add phone','add birthday','add email','add address', 'could you add the name', 'please, add the one name'],
+            'responses':['OK', 'No problem', 'I got it']
+        },
+        'addnotes': {
+            'examples':['addnotes','add notes', 'addnote', 'add notes'],
             'responses':['OK', 'No problem', 'I got it']
         },
         'change': {

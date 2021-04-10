@@ -1,4 +1,4 @@
-from helpers import BOT_HANDLERS, INTENTS, ACTIONS
+from helpers import BOT_HANDLERS, INTENTS, ACTIONS, TAGS
 from collections import UserDict
 from datetime import datetime
 from datetime import timedelta
@@ -40,6 +40,12 @@ class NameError7(Exception):
 class NameError8(Exception):
     pass
 
+class NameError9(Exception):
+    pass
+
+class NameError10(Exception):
+    pass
+
 
 def input_error(func):
     def inner(com, arg, adress_book):
@@ -55,6 +61,8 @@ def input_error(func):
         my_error_10 = "E-mail in database is not exiest yet!"
         my_error_11 = "Address of living in database is not exiest yet!"
         my_error_12 = "You maked the fail by inputing the path to the folder!"
+        my_error_13 = "Missing note in database!"
+        my_error_14 = "Missing tag in database!"
         try:
             res = func(com, arg, adress_book)
         except KeyError:
@@ -81,6 +89,10 @@ def input_error(func):
             return my_error_11
         except NameError8:
             return my_error_12
+        except NameError9:
+            return my_error_13
+        except NameError10:
+            return my_error_14
         else:
             return res
 
@@ -98,6 +110,7 @@ def parser(com, arg, my_adressbook):
         #--------------------actions--------------------
         "clean":clean.main,
         "add": my_adressbook.add,
+        "addnotes": my_adressbook.addnotes,
         "change": my_adressbook.change,
         "delete": my_adressbook.delete,
         "find": my_adressbook.findall,
@@ -117,6 +130,7 @@ def parser(com, arg, my_adressbook):
         #--------------------actions--------------------
         "clean":"<the path to the folder for cleaning>",
         "add": "<name> <value>",
+        "addnotes": "<name> <tag> <value>",
         "change": "<name> <old_value> <new_value>",
         "delete": "<name> <value>",
         "find": "<second_key (all, phone, birthday, email, address)> <name>",
@@ -147,6 +161,8 @@ def parser(com, arg, my_adressbook):
             raise NameError8
     elif com in BOT_HANDLERS["actions"]["add"]["examples"]:
         result = commands["add"](arg[0], arg[1])
+    elif com in BOT_HANDLERS["actions"]["addnotes"]["examples"]:
+        result = commands["addnotes"](arg[0], arg[1], arg[2])
     elif com in BOT_HANDLERS["actions"]["change"]["examples"]:
         result = commands["change"](arg[0], arg[1], arg[2])
     elif com in BOT_HANDLERS["actions"]["delete"]["examples"]:
@@ -246,6 +262,13 @@ class Address(Field):
             if v["address"] == field:
                 return True
 
+class Notes(Field):
+    def is_note(self, field):
+        for value_list in self.data.values():
+            for v in value_list["notes"]:
+                if v == field:
+                    return True
+
 
 class Record(Name, Phone, Birthday, Email, Address):
     def __init__(self):
@@ -254,6 +277,7 @@ class Record(Name, Phone, Birthday, Email, Address):
         self.birthday = ""
         self.email = []
         self.address = ""
+        self.notes = []
         self.data = {}
 
     def __add_item_phone(self, name, phone):
@@ -267,6 +291,12 @@ class Record(Name, Phone, Birthday, Email, Address):
             self.data[name]["email"].append(email)
         else:
             self.data[name]["email"] = [email]
+
+    def __add_item_notes(self, name, note):
+        if "notes" in self.data[name]:
+            self.data[name]["notes"].append(note)
+        else:
+            self.data[name]["notes"] = [note]
 
     def __add_phone(self, name, phone):
         if not self.is_name(name):
@@ -311,6 +341,17 @@ class Record(Name, Phone, Birthday, Email, Address):
             self.data = self.change_Record(name, self.data.get(name))
         answer = random.choice(BOT_HANDLERS["actions"]["add"]["responses"])
         temp = "I added address"
+        return answer + ": " + temp
+
+    def __add_notes(self, name, note):
+        if not self.is_name(name):
+            self.data = self.add_Record(name, {"notes": [note]}, "notes")
+            self.data = self.change_Record(name, {"notes": [note]})
+        else:
+            self.__add_item_notes(name, note)
+            self.data = self.change_Record(name, self.data.get(name))
+        answer = random.choice(BOT_HANDLERS["actions"]["addnotes"]["responses"])
+        temp = "I added note"
         return answer + ": " + temp
 
     def __change_phone(self, name, old_phone, new_phone):
@@ -368,6 +409,20 @@ class Record(Name, Phone, Birthday, Email, Address):
         else:
             raise NameError3
 
+    def __change_notes(self, name, old_note, new_note):
+        if self.is_name(name):
+            if self.is_note(old_note):
+                self.data[name]["notes"].remove(old_note)
+                self.__add_item_notes(name, new_note)
+                self.data = self.change_Record(name, self.data.get(name))
+                answer = random.choice(BOT_HANDLERS["actions"]["notes"]["responses"])
+                temp = "I changed note"
+                return answer + ": " + temp
+            else:
+                raise NameError9
+        else:
+            raise NameError3
+
     def __delete_phone(self, name, phone):
         if self.is_name(name):
             if self.is_phone(phone):
@@ -420,6 +475,19 @@ class Record(Name, Phone, Birthday, Email, Address):
         else:
             raise NameError3
 
+    def __delete_notes(self, name, note):
+        if self.is_name(name):
+            if self.is_note(note):
+                self.data[name]["notes"].remove(note)
+                self.data = self.change_Record(name, self.data.get(name))
+                answer = random.choice(BOT_HANDLERS["actions"]["notes"]["responses"])
+                temp = "I deleted note"
+                return answer + ": " + temp
+            else:
+                raise NameError9
+        else:
+            raise NameError3
+
     def add(self, name, value):
         self.value = value
         if re.match(r"\d{3}-\d{3}-\d{2}-\d{2}", self.value):
@@ -433,6 +501,13 @@ class Record(Name, Phone, Birthday, Email, Address):
             return self.__add_address(name, self.value)
         else:
             raise ValueError
+
+    def addnotes(self, name, tag, value):
+        if tag in TAGS:
+            self.value = "{}:{}".format(tag, value)
+            return self.__add_notes(name, self.value)
+        else:
+            raise NameError10
 
     def change(self, name, old_value, new_value):
         self.value = new_value
