@@ -106,6 +106,7 @@ def parser(com, arg, my_adressbook):
         "birthday": my_adressbook.findbirthday,
         "email": my_adressbook.findemail,
         "address": my_adressbook.findaddress,
+        "peaple":my_adressbook.givepeaplebirthday,
     }
     arguments = {
         #--------------------intents--------------------
@@ -124,6 +125,7 @@ def parser(com, arg, my_adressbook):
         "birthday": "<part or full date of birthday>",
         "email": "<part or full email>",
         "address": "<part or full address>",
+        "peaple":"<number>",
     }
     #--------------------intents--------------------
     if com in BOT_HANDLERS["intents"]["exit"]["examples"]:
@@ -161,7 +163,9 @@ def parser(com, arg, my_adressbook):
         result = commands["email"](arg[0])
     elif com in BOT_HANDLERS["actions"]["address"]["examples"]:
         result = commands["address"](arg[0])
-    elif com in BOT_HANDLERS["failure_phrases"]:
+    elif com in BOT_HANDLERS["actions"]["peaple"]["examples"]:
+        result = commands["peaple"](arg[0])
+    elif com in BOT_HANDLERS["failure_phrases"] or com == None:
         result = random.choice(BOT_HANDLERS['failure_phrases'])
     return result
 
@@ -509,6 +513,18 @@ class Record(Name, Phone, Birthday, Email, Address):
             result += "\n\t\t\t" + str(command) + " " + str(arguments[command])
         answer = random.choice(BOT_HANDLERS["intents"]["help"]["responses"])
         return answer + " " + result
+
+    def givepeaplebirthday(self, number):
+        result = ""
+        for name in self.data.keys():
+            if self.day_to_birthday(name) in range(int(number)):
+                temp = str(self.day_to_birthday(name)) + " days to birthday"
+                result += "\n\t\t\t" + str(name) + " " + str(self.data[name]) + " - " + str(temp)
+        if result:
+            answer = random.choice(BOT_HANDLERS["actions"]["peaple"]["responses"])
+            return answer + " " + result + " " + temp
+        else:
+            return "No peaple"
 
     def findname(self, part_name):
         result = ""

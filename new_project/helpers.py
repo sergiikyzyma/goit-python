@@ -1,7 +1,7 @@
 import random
 
 INTENTS = ["exit", "help", "hello", "show"]
-ACTIONS = ["clean", "add", "change", "delete", "find", "name", "phone", "birthday", "address"]
+ACTIONS = ["clean", "add", "change", "delete", "find", "name", "phone", "birthday", "address", "peaple"]
     
 BOT_HANDLERS = {
     'intents': {
@@ -35,6 +35,7 @@ BOT_HANDLERS = {
                         10. find email John - I'll show you - I'll show you email and in how many days the contact's birthday will be.
                         11. find address John - I'll show you - I'll show you address and in how many days the contact's birthday will be.
                         12. find all John - search through the contents of the contact book. I will show you all the information about one user
+                        13. peaple {number} - search peaple, who birth for {number} days
                         """]
         },
         'show': {
@@ -81,6 +82,10 @@ BOT_HANDLERS = {
         },
         'address': {
             'examples':['address', 'show me address', 'could you show me some address', 'please, show me address'],
+            'responses':['OK', 'Look here', 'Sure', 'You got it']
+        },
+        'peaple': {
+            'examples':['peaple', 'give me peaple', 'give me peaple of birthday'],
             'responses':['OK', 'Look here', 'Sure', 'You got it']
         },
     },
