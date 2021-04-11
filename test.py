@@ -746,3 +746,5 @@ for i in temp:
     print(qqq.startswith(i))
     print(qqq.split(i)[0], "    ", qqq)
     input()
+if 'a' not in 'adrrdxfdxfdad':
+    print("Ich liebe dich")

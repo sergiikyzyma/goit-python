@@ -51,7 +51,7 @@ BOT_HANDLERS = {
     },
     "actions":{
         "clean": {
-            "examples":["clean this folder", "clean", "clean folder"],
+            "examples":["clean this folder", "clean"],
             "responses":["Sure", "I can find it", "Of course"]
         },
         "addcontact": {
