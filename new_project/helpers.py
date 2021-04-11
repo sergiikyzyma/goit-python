@@ -1,7 +1,7 @@
 import random
 
 INTENTS = ["exit", "help", "hello", "show"]
-ACTIONS = ["clean", "add",  "addnotes", "change", "delete", "find", "name", "phone", "birthday", "address", "peaple"]
+ACTIONS = ["clean", "addcontact",  "addnotes", "changecontact", "changenotes", "deletecontact", "deletenotes", "findcontact", "findbytag", "name", "phone", "birthday", "address", "peaple"]
 TAGS = ["raider", "elergy", "special"]
     
 BOT_HANDLERS = {
@@ -26,18 +26,22 @@ BOT_HANDLERS = {
                         1. show all - I'll show you the whole addressbook and all information about all users
                         2. name, phone, birthday, email or address {value} - I'll show you the {value} contacts from the addressbook
                         about one or more users by a few digits of the phone number or letters of the name
-                        3. add John 481-234-56-78 - I'll add the new contact {name} and {phone, birthday, email or address} to you addressbook
+                        3. add contact John 481-234-56-78 - I'll add the new contact {name} and {phone, birthday, email or address} to you addressbook
                         4. remove contact John 481-234-56-78 - I'll remove the phone from the contact
                         5. remove contact John 04-04-1978 - I'll remove the birthday from the contact
                         6. change contact John 481-234-56-78 481-234-56-79 - I'll change the first phone of the contact on new one
                         7. change contact John 04-04-1978 04-04-1979 - I'll change the first birthday of the contact on new one
-                        8. find phone John - I'll show you - I'll show you phone and in how many days the contact's birthday will be.
-                        9. find birthday John - I'll show you - I'll show you in how many days the contact's birthday will be.
-                        10. find email John - I'll show you - I'll show you email and in how many days the contact's birthday will be.
-                        11. find address John - I'll show you - I'll show you address and in how many days the contact's birthday will be.
-                        12. find all John - search through the contents of the contact book. I will show you all the information about one user
-                        13. peaple {number} - search peaple, who birth for {number} days
-                        14. add {name} {tag} {note} - adding note by tag
+                        8. find phone John - I'll show you phone and in how many days the contact's birthday will be.
+                        9. find birthday John - I'll show you in how many days the contact's birthday will be.
+                        10. find email John - I'll show you email and in how many days the contact's birthday will be.
+                        11. find address John - I'll show you address and in how many days the contact's birthday will be.
+                        12. find all John - I'll search through the contents of the contact book. I will show you all the information about one user
+                        13. find notes John - I'll show you notes about user and in how many days the contact's birthday will be.
+                        14. find by tag <tag> - I'll show you notes about all users by tag and in how many days the contact's birthday will be.
+                        15. peaple {number} - search peaple, who birth for {number} days
+                        16. addnotes {name} {tag} {note} - adding note by tag
+                        17. changenotes {name} {tag} {old_note} (new_note) - changing note by tag
+                        18. deletenotes {name} {tag} {note} - changing note by tag
                         """]
         },
         'show': {
@@ -50,25 +54,37 @@ BOT_HANDLERS = {
             'examples':['clean me this folder', 'clean'],
             'responses':['Sure', 'I can find it', 'Of course']
         },
-        'add': {
-            'examples':['add contact','add phone','add birthday','add email','add address', 'could you add the name', 'please, add the one name'],
+        'addcontact': {
+            'examples':['add contact','add phone','add birthday','add email','add address', 'addcontact', 'could you add the value', 'please, add the one value'],
             'responses':['OK', 'No problem', 'I got it']
         },
         'addnotes': {
             'examples':['addnotes','add notes', 'addnote', 'add notes'],
             'responses':['OK', 'No problem', 'I got it']
         },
-        'change': {
-            'examples':['change contact', 'change', 'could you change phone'],
+        'changecontact': {
+            'examples':['changecontact', 'change contact', 'could you change phone'],
             'responses':['Yes, Sir', 'I can do it', 'Never give up']
         },
-        'delete': {
-            'examples':['remove contact', 'delete'],
+        'changenotes': {
+            'examples':['changenotes', 'change notes'],
+            'responses':['Yes, Sir', 'I can do it', 'Never give up']
+        },
+        'deletecontact': {
+            'examples':['removecontact', 'remove contact', 'deletecontact', 'delete contact'],
             'responses':['OK', 'No problem', 'I got it']
         },
-        'find': {
-            'examples':['find', 'findall', 'find all'],
+        'deletenotes': {
+            'examples':['deletenotes', 'delete notes'],
+            'responses':['OK', 'No problem', 'I got it']
+        },
+        'findcontact': {
+            'examples':['findcontact', 'find contact'],
             'responses':['Sure', 'I can find it', 'Of course']
+        },
+        'findbytag': {
+            'examples':['findbytag', 'find by tag'],
+            'responses':['OK', 'Look here', 'Sure', 'You got it']
         },
         'name': {
             'examples':['name', 'show me contacts', 'could you show me some contacts', 'please, show me contacts'],

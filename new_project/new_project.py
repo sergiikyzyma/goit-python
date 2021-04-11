@@ -109,11 +109,14 @@ def parser(com, arg, my_adressbook):
         "show": my_adressbook.showall,
         #--------------------actions--------------------
         "clean":clean.main,
-        "add": my_adressbook.add,
+        "addcontact": my_adressbook.addcontact,
         "addnotes": my_adressbook.addnotes,
-        "change": my_adressbook.change,
-        "delete": my_adressbook.delete,
-        "find": my_adressbook.findall,
+        "change": my_adressbook.changecontact,
+        "changenotes": my_adressbook.changenotes,
+        "delete": my_adressbook.deletecontact,
+        "deletenotes": my_adressbook.deletenotes,
+        "findcontact": my_adressbook.findcontact,
+        "findbytag":my_adressbook.findbytag,
         "name": my_adressbook.findname,
         "phone": my_adressbook.findphone,
         "birthday": my_adressbook.findbirthday,
@@ -129,11 +132,14 @@ def parser(com, arg, my_adressbook):
         "exit": "<nothing>",
         #--------------------actions--------------------
         "clean":"<the path to the folder for cleaning>",
-        "add": "<name> <value>",
+        "addcontact": "<name> <value>",
         "addnotes": "<name> <tag> <value>",
         "change": "<name> <old_value> <new_value>",
+        "changenotes": "<name> <tag> <old_value> <new_value>",
         "delete": "<name> <value>",
-        "find": "<second_key (all, phone, birthday, email, address)> <name>",
+        "deletenotes": "<name> <tag> <value>",
+        "findcontact": "<second_key (all, phone, birthday, email, address)> <name>",
+        "findbytag":"<tag> for searching",
         "name": "<part or full name>",
         "phone": "<part or full phone-number>",
         "birthday": "<part or full date of birthday>",
@@ -159,16 +165,22 @@ def parser(com, arg, my_adressbook):
             result = "This folder was sorted and cleaned"
         else:
             raise NameError8
-    elif com in BOT_HANDLERS["actions"]["add"]["examples"]:
-        result = commands["add"](arg[0], arg[1])
+    elif com in BOT_HANDLERS["actions"]["addcontact"]["examples"]:
+        result = commands["addcontact"](arg[0], arg[1])
     elif com in BOT_HANDLERS["actions"]["addnotes"]["examples"]:
         result = commands["addnotes"](arg[0], arg[1], arg[2])
-    elif com in BOT_HANDLERS["actions"]["change"]["examples"]:
-        result = commands["change"](arg[0], arg[1], arg[2])
-    elif com in BOT_HANDLERS["actions"]["delete"]["examples"]:
-        result = commands["delete"](arg[0], arg[1])
-    elif com in BOT_HANDLERS["actions"]["find"]["examples"]:
-        result = commands["find"](arg[0], arg[1])
+    elif com in BOT_HANDLERS["actions"]["changecontact"]["examples"]:
+        result = commands["changecontact"](arg[0], arg[1], arg[2])
+    elif com in BOT_HANDLERS["actions"]["changenotes"]["examples"]:
+        result = commands["changenotes"](arg[0], arg[1], arg[2], arg[3])
+    elif com in BOT_HANDLERS["actions"]["deletecontact"]["examples"]:
+        result = commands["deletecontact"](arg[0], arg[1])
+    elif com in BOT_HANDLERS["actions"]["deletenotes"]["examples"]:
+        result = commands["deletenotes"](arg[0], arg[1], arg[2])
+    elif com in BOT_HANDLERS["actions"]["findcontact"]["examples"]:
+        result = commands["findcontact"](arg[0], arg[1])
+    elif com in BOT_HANDLERS["actions"]["findbytag"]["examples"]:
+        result = commands["findbytag"](arg[0])
     elif com in BOT_HANDLERS["actions"]["name"]["examples"]:
         result = commands["name"](arg[0])
     elif com in BOT_HANDLERS["actions"]["phone"]["examples"]:
@@ -270,7 +282,7 @@ class Notes(Field):
                     return True
 
 
-class Record(Name, Phone, Birthday, Email, Address):
+class Record(Name, Phone, Birthday, Email, Address, Notes):
     def __init__(self):
         self.name = ""
         self.phone = []
@@ -415,7 +427,7 @@ class Record(Name, Phone, Birthday, Email, Address):
                 self.data[name]["notes"].remove(old_note)
                 self.__add_item_notes(name, new_note)
                 self.data = self.change_Record(name, self.data.get(name))
-                answer = random.choice(BOT_HANDLERS["actions"]["notes"]["responses"])
+                answer = random.choice(BOT_HANDLERS["actions"]["addnotes"]["responses"])
                 temp = "I changed note"
                 return answer + ": " + temp
             else:
@@ -480,7 +492,7 @@ class Record(Name, Phone, Birthday, Email, Address):
             if self.is_note(note):
                 self.data[name]["notes"].remove(note)
                 self.data = self.change_Record(name, self.data.get(name))
-                answer = random.choice(BOT_HANDLERS["actions"]["notes"]["responses"])
+                answer = random.choice(BOT_HANDLERS["actions"]["addnotes"]["responses"])
                 temp = "I deleted note"
                 return answer + ": " + temp
             else:
@@ -488,7 +500,7 @@ class Record(Name, Phone, Birthday, Email, Address):
         else:
             raise NameError3
 
-    def add(self, name, value):
+    def addcontact(self, name, value):
         self.value = value
         if re.match(r"\d{3}-\d{3}-\d{2}-\d{2}", self.value):
             return self.__add_phone(name, self.value)
@@ -509,7 +521,7 @@ class Record(Name, Phone, Birthday, Email, Address):
         else:
             raise NameError10
 
-    def change(self, name, old_value, new_value):
+    def changecontact(self, name, old_value, new_value):
         self.value = new_value
         if re.match(r"\d{3}-\d{3}-\d{2}-\d{2}", self.value):
             return self.__change_phone(name, old_value, self.value)
@@ -522,7 +534,14 @@ class Record(Name, Phone, Birthday, Email, Address):
         else:
             raise ValueError
 
-    def delete(self, name, value):
+    def changenotes(self, name, tag, old_value, new_value):
+        if tag in TAGS:
+            self.value = "{}:{}".format(tag, new_value)
+            return self.__change_notes(name, old_value, self.value)
+        else:
+            raise NameError10
+
+    def deletecontact(self, name, value):
         self.value = value
         if re.match(r"\d{3}-\d{3}-\d{2}-\d{2}", self.value):
             return self.__delete_phone(name, self.value)
@@ -535,7 +554,14 @@ class Record(Name, Phone, Birthday, Email, Address):
         else:
             raise ValueError
 
-    def findall(self, arg, name):
+    def deletenotes(self, name, tag, value):
+        if tag in TAGS:
+            self.value = "{}:{}".format(tag, value)
+            return self.__delete_notes(name, self.value)
+        else:
+            raise NameError10
+
+    def findcontact(self, arg, name):
         if self.is_name(name):
             answer = random.choice(BOT_HANDLERS["actions"]["find"]["responses"])
             temp = str(self.day_to_birthday(name)) + " days to birthday"
@@ -544,6 +570,8 @@ class Record(Name, Phone, Birthday, Email, Address):
             elif arg == "phone" or arg == "birthday":
                 return answer + " " + str(self.data.get(name).get(arg)) + " - " + temp
             elif arg == "email" or arg == "address":
+                return answer + " " + str(self.data.get(name).get(arg)) + " - " + temp
+            elif arg == "notes":
                 return answer + " " + str(self.data.get(name).get(arg)) + " - " + temp
             else:
                 raise KeyError
@@ -647,7 +675,8 @@ class Record(Name, Phone, Birthday, Email, Address):
             if "email" in self.data[name]:
                 for elem in self.data[name]["email"]:
                     if re.findall(part_email, elem):
-                        result += "\n\t\t\t" + str(name) + " " + str(elem)
+                        temp = str(self.day_to_birthday(name)) + " days to birthday"
+                        result += "\n\t\t\t" + str(name) + " " + str(elem) + " - " + str(temp)
         if result:
             answer = random.choice(BOT_HANDLERS["actions"]["email"]["responses"])
             return answer + " " + result
@@ -660,12 +689,27 @@ class Record(Name, Phone, Birthday, Email, Address):
             if "address" in self.data[name]:
                 temp = self.data[name]["address"]
                 if re.findall(part_address, temp):
-                    result += "\n\t\t\t" + str(name) + " " + str(temp)
+                    temp_str = str(self.day_to_birthday(name)) + " days to birthday"
+                    result += "\n\t\t\t" + str(name) + " " + str(temp) + " - " + str(temp_str)
         if result:
             answer = random.choice(BOT_HANDLERS["actions"]["address"]["responses"])
             return answer + " " + result
         else:
             raise NameError7
+
+    def findbytag(self, tag):
+        result = ""
+        for name in self.data.keys():
+            if "notes" in self.data[name]:
+                for elem in self.data[name]["notes"]:
+                    if re.findall(tag, elem):
+                        temp = str(self.day_to_birthday(name)) + " days to birthday"
+                        result += "\n\t\t\t" + str(name) + " " + str(elem) + " - " + str(temp) + " by " + str(tag)
+        if result:
+            answer = random.choice(BOT_HANDLERS["actions"]["findbytag"]["responses"])
+            return answer + " " + result
+        else:
+            raise NameError9
 
 
 def main():
