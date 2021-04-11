@@ -71,7 +71,7 @@ BOT_HANDLERS = {
             'responses':['Yes, Sir', 'I can do it', 'Never give up']
         },
         'deletecontact': {
-            'examples':['removecontact', 'remove contact', 'deletecontact', 'delete phone','delete birthday','delete email','delete address' 'delete contact'],
+            'examples':['removecontact', 'remove contact', 'deletecontact', 'delete phone','delete birthday','delete email','delete address'],
             'responses':['OK', 'No problem', 'I got it']
         },
         'deletenotes': {
