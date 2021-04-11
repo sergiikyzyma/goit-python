@@ -767,7 +767,7 @@ def main():
             my_record.data.pop(key)
         command = input("{:>20}".format("User: "))
         kommande, argumente = split_command(command)
-        if kommande != "clean":
+        if kommande in BOT_HANDLERS["actions"]["clean"]["examples"]:
             argumente = argumente.lower().split(" ")
         result = parser(kommande, argumente, my_record)
         print("{:>20}{:<300}".format("Your assistent: ", result))
