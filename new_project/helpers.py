@@ -2,7 +2,7 @@ import random
 
 INTENTS = ["exit", "help", "hello", "show"]
 ACTIONS = ["clean", "addcontact",  "addnotes", "changecontact", "changenotes", "deletecontact", "deletenotes", "findcontact", "findbytag", "name", "phone", "birthday", "address", "peaple"]
-TAGS = ["raider", "elergy", "special"]
+TAGS = ["raider", "allergy", "special"]
     
 BOT_HANDLERS = {
     'intents': {
