@@ -111,9 +111,9 @@ def parser(com, arg, my_adressbook):
         "clean":clean.main,
         "addcontact": my_adressbook.addcontact,
         "addnotes": my_adressbook.addnotes,
-        "change": my_adressbook.changecontact,
+        "changecontact": my_adressbook.changecontact,
         "changenotes": my_adressbook.changenotes,
-        "delete": my_adressbook.deletecontact,
+        "deletecontact": my_adressbook.deletecontact,
         "deletenotes": my_adressbook.deletenotes,
         "findcontact": my_adressbook.findcontact,
         "findbytag":my_adressbook.findbytag,
@@ -134,9 +134,9 @@ def parser(com, arg, my_adressbook):
         "clean":"<the path to the folder for cleaning>",
         "addcontact": "<name> <value>",
         "addnotes": "<name> <tag> <value>",
-        "change": "<name> <old_value> <new_value>",
+        "changecontact": "<name> <old_value> <new_value>",
         "changenotes": "<name> <tag> <old_value> <new_value>",
-        "delete": "<name> <value>",
+        "deletecontact": "<name> <value>",
         "deletenotes": "<name> <tag> <value>",
         "findcontact": "<second_key (all, phone, birthday, email, address)> <name>",
         "findbytag":"<tag> for searching",
@@ -439,9 +439,13 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
         if self.is_name(name):
             if self.is_phone(phone):
                 self.data[name]["phone"].remove(phone)
+                if self.data[name]["phone"] == []:
+                    self.data[name].pop("phone")
                 self.data = self.change_Record(name, self.data.get(name))
                 answer = random.choice(BOT_HANDLERS["actions"]["delete"]["responses"])
                 temp = "I deleted phone-number"
+                if self.data[name] == {}:
+                    self.data.pop(name)
                 return answer + ": " + temp
             else:
                 raise NameError4
@@ -455,6 +459,8 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
                 self.data = self.change_Record(name, self.data.get(name))
                 answer = random.choice(BOT_HANDLERS["actions"]["delete"]["responses"])
                 temp = "I deleted date of birthday"
+                if self.data[name] == {}:
+                    self.data.pop(name)
                 return answer + ": " + temp
             else:
                 raise NameError5
@@ -465,9 +471,13 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
         if self.is_name(name):
             if self.is_email(email):
                 self.data[name]["email"].remove(email)
+                if self.data[name]["email"] == []:
+                    self.data[name].pop("email")
                 self.data = self.change_Record(name, self.data.get(name))
                 answer = random.choice(BOT_HANDLERS["actions"]["delete"]["responses"])
                 temp = "I deleted email"
+                if self.data[name] == {}:
+                    self.data.pop(name)
                 return answer + ": " + temp
             else:
                 raise NameError6
@@ -481,6 +491,8 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
                 self.data = self.change_Record(name, self.data.get(name))
                 answer = random.choice(BOT_HANDLERS["actions"]["delete"]["responses"])
                 temp = "I deleted address"
+                if self.data[name] == {}:
+                    self.data.pop(name)
                 return answer + ": " + temp
             else:
                 raise NameError7
@@ -491,9 +503,13 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
         if self.is_name(name):
             if self.is_note(note):
                 self.data[name]["notes"].remove(note)
+                if self.data[name]["notes"] == []:
+                    self.data[name].pop("notes")
                 self.data = self.change_Record(name, self.data.get(name))
                 answer = random.choice(BOT_HANDLERS["actions"]["addnotes"]["responses"])
                 temp = "I deleted note"
+                if self.data[name] == {}:
+                    self.data.pop(name)
                 return answer + ": " + temp
             else:
                 raise NameError9
@@ -536,8 +552,9 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
 
     def changenotes(self, name, tag, old_value, new_value):
         if tag in TAGS:
+            temp_value = "{}:{}".format(tag, old_value)
             self.value = "{}:{}".format(tag, new_value)
-            return self.__change_notes(name, old_value, self.value)
+            return self.__change_notes(name, temp_value, self.value)
         else:
             raise NameError10
 

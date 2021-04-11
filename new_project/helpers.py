@@ -63,7 +63,7 @@ BOT_HANDLERS = {
             'responses':['OK', 'No problem', 'I got it']
         },
         'changecontact': {
-            'examples':['changecontact', 'change contact', 'could you change phone'],
+            'examples':['changecontact','change phone','change birthday','change email','change address', 'change contact', 'could you change value'],
             'responses':['Yes, Sir', 'I can do it', 'Never give up']
         },
         'changenotes': {
@@ -71,7 +71,7 @@ BOT_HANDLERS = {
             'responses':['Yes, Sir', 'I can do it', 'Never give up']
         },
         'deletecontact': {
-            'examples':['removecontact', 'remove contact', 'deletecontact', 'delete contact'],
+            'examples':['removecontact', 'remove contact', 'deletecontact', 'delete phone','delete birthday','delete email','delete address' 'delete contact'],
             'responses':['OK', 'No problem', 'I got it']
         },
         'deletenotes': {
