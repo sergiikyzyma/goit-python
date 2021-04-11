@@ -50,7 +50,7 @@ class NameError10(Exception):
 def input_error(func):
     def inner(com, arg, adress_book):
         my_error_1 = "You wrote wrong the second key or it's missing"
-        my_error_2 = "Wrong phone-number (must be in format XXX-XXX-XX-XX) or birthday (must be in format XX-XX-XXXX)!"
+        my_error_2 = "Wrong phone-number (must be in format XXX-XXX-XX-XX), or birthday (must be in format XX-XX-XXXX), or e-mail, or address!"
         my_error_3 = "You maked the fail by inputing the command!"
         my_error_4 = "You maked the fail by inputing the number of arguments!"
         my_error_5 = "You wrote wrong the compound commmnd 'good bye'!"
@@ -523,9 +523,9 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
         elif re.match(r"\d{2}-\d{2}-\d{4}", self.value):
             _ = datetime.strptime(self.value, "%d-%m-%Y")
             return self.__add_birthday(name, self.value)
-        elif re.match(r"[A-Za-z0-9]*\@\w*\.[a-z]{3}", self.value):
+        elif re.match(r"(\w|\.|\_|\-)+[@](\w|\.|\_|\-)+[.]\w{2,3}", self.value):
             return self.__add_email(name, self.value)
-        elif re.match(r"\w*", self.value):
+        elif re.match(r"\w+", self.value):
             return self.__add_address(name, self.value)
         else:
             raise ValueError
@@ -543,9 +543,9 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
             return self.__change_phone(name, old_value, self.value)
         elif re.match(r"\d{2}-\d{2}-\d{4}", self.value):
             return self.__change_birthday(name, old_value, self.value)
-        elif re.match(r"[A-Za-z0-9]*\@\w*\.[a-z]{3}", self.value):
+        elif re.match(r"(\w|\.|\_|\-)+[@](\w|\.|\_|\-)+[.]\w{2,3}", self.value):
             return self.__change_email(name, old_value, self.value)
-        elif re.match(r"\w*", self.value):
+        elif re.match(r"\w+", self.value):
             return self.__change_address(name, old_value, self.value)
         else:
             raise ValueError
@@ -564,9 +564,9 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
             return self.__delete_phone(name, self.value)
         elif re.match(r"\d{2}-\d{2}-\d{4}", self.value):
             return self.__delete_birthday(name, self.value)
-        elif re.match(r"[A-Za-z0-9]*\@\w*\.[a-z]{3}", self.value):
+        elif re.match(r"(\w|\.|\_|\-)+[@](\w|\.|\_|\-)+[.]\w{2,3}", self.value):
             return self.__delete_email(name, self.value)
-        elif re.match(r"\w*", self.value):
+        elif re.match(r"\w+", self.value):
             return self.__delete_address(name, self.value)
         else:
             raise ValueError
