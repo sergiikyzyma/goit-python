@@ -1,6 +1,7 @@
 from collections import UserDict
 from datetime import datetime, timedelta
 from helpers import BOT_HANDLERS, INTENTS, ACTIONS, TAGS
+from prettytable import PrettyTable
 import pickle
 import random
 import re
@@ -431,7 +432,7 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
 
     def hello(self):
         return random.choice(BOT_HANDLERS["intents"]["hello"]["responses"])
-
+    '''
     def showall(self):
         result = ""
         serialized_data = pickle.dumps(self.data, 5)
@@ -442,6 +443,37 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
                 self.data = pickle.loads(serialized_data)
                 answer = random.choice(BOT_HANDLERS["intents"]["show"]["responses"])
                 return answer + " " + result
+    '''
+    def showall(self):
+        tabl_head = ['name', 'phone', 'birthday', 'email', 'address', 'notes']
+        columns = len(tabl_head)
+        table = PrettyTable(tabl_head)
+        for name, values in self.data.items():
+            tabl = ['', '', '', '', '', '']
+            tabl[0] = name
+            for key, value in values.items():
+                if key == "phone":
+                    _phone = ''
+                    for phone in value:
+                        _phone += f"{phone}\n"
+                    tabl[1] = _phone
+                elif key == "birthday":
+                    tabl[2] = value
+                elif key == "email":
+                    _email = ''
+                    for _email in value:
+                        _email += f"{email}\n"
+                    tabl[3] = _phone
+                elif key == "address":
+                    tabl[4] = value
+                elif key == "notes":
+                    _note = ''
+                    for note in value:
+                        _note += f"{note}\n"
+                    tabl[5] = _note
+            table.add_row(tabl)
+            tabl.clear()
+        return table.get_string(title="Full client's databases")
 
     def ausgang(self):
         return random.choice(BOT_HANDLERS["intents"]["exit"]["responses"])
