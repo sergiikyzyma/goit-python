@@ -55,11 +55,6 @@ class Adressbook(UserDict):
         self.data.update({name: value})
         return self.data
 
-    def iterator(self):
-        item = self.data.popitem()
-        yield str(item)
-
-
 class Field(Adressbook):
     def __init__(self):
         self.__value = ""
@@ -432,21 +427,9 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
 
     def hello(self):
         return random.choice(BOT_HANDLERS["intents"]["hello"]["responses"])
-    '''
-    def showall(self):
-        result = ""
-        serialized_data = pickle.dumps(self.data, 5)
-        while True:
-            try:
-                result += "\n\t\t\t" + str(next(self.iterator()))
-            except KeyError:
-                self.data = pickle.loads(serialized_data)
-                answer = random.choice(BOT_HANDLERS["intents"]["show"]["responses"])
-                return answer + " " + result
-    '''
+
     def showall(self):
         tabl_head = ['name', 'phone', 'birthday', 'email', 'address', 'notes']
-        columns = len(tabl_head)
         table = PrettyTable(tabl_head)
         for name, values in self.data.items():
             tabl = ['', '', '', '', '', '']
@@ -461,7 +444,7 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
                     tabl[2] = value
                 elif key == "email":
                     _email = ''
-                    for _email in value:
+                    for email in value:
                         _email += f"{email}\n"
                     tabl[3] = _phone
                 elif key == "address":
@@ -473,7 +456,8 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
                     tabl[5] = _note
             table.add_row(tabl)
             tabl.clear()
-        return table.get_string(title="Full client's databases")
+        answer = random.choice(BOT_HANDLERS["intents"]["show"]["responses"])
+        return answer + "\n" + table.get_string(title="Full client's databases")
 
     def ausgang(self):
         return random.choice(BOT_HANDLERS["intents"]["exit"]["responses"])

@@ -161,11 +161,11 @@ def parser(com, arg, my_adressbook):
 def split_command(com):
     for intent in INTENTS:
         for example in BOT_HANDLERS["intents"][intent]["examples"]:
-            if re.match(example, com):
+            if re.match(example, com.lower()):
                 return example, com.split(example)[0].strip()
     for action in ACTIONS:
         for example in BOT_HANDLERS["actions"][action]["examples"]:
-            if re.match(example, com):
+            if re.match(example, com.lower()):
                 return example, com.split(example)[1].strip()
     return 'failure_phrases', random.choice(BOT_HANDLERS['failure_phrases'])
 
@@ -211,7 +211,6 @@ def main():
         if kommande not in BOT_HANDLERS["actions"]["clean"]["examples"]:
             argumente = argumente.lower().split(" ")
         result = parser(kommande, argumente, my_record)
-        #print("{:>20}{:<300}".format("Your assistent: ", result))
         print("{:>20}".format("Your assistent: "), result)
         if result in BOT_HANDLERS["intents"]["exit"]["responses"]:
             break
