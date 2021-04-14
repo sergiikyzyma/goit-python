@@ -7,7 +7,7 @@ TAGS = ["raider", "allergy", "special"]
 BOT_HANDLERS = {
     "intents": {
         "exit": {
-            "examples":["bye", "exit", "thank you", "that`s all"],
+            "examples":["bye", "exit", "thank you", "thats all"],
             "responses":["Bye", "Have a nice day", "It was pleasure to help you"]
         },
         "hello": {
@@ -87,27 +87,27 @@ BOT_HANDLERS = {
             "responses":["OK", "Look here", "Sure", "You got it"]
         },
         "name": {
-            "examples":["name", "show me contacts", "could you show me some contacts", "please, show me contacts"],
+            "examples":["name", "show me contacts", "could you show me some contacts", "please show me contacts"],
             "responses":["OK", "Look here", "Sure", "You got it"]
         },
         "phone": {
-            "examples":["phone", "show me phone", "could you show me some phone", "please, show me phone"],
+            "examples":["phone", "show me phone", "could you show me some phone", "please show me phone"],
             "responses":["OK", "Look here", "Sure", "You got it"]
         },
         "birthday": {
-            "examples":["birthday", "show me birthday", "could you show me some birthday", "please, show me birthday"],
+            "examples":["birthday", "show me birthday", "could you show me some birthday", "please show me birthday"],
             "responses":["OK", "Look here", "Sure", "You got it"]
         },
         "email": {
-            "examples":["email", "show me email", "could you show me some email", "please, show me email"],
+            "examples":["email", "show me email", "could you show me some email", "please show me email"],
             "responses":["OK", "Look here", "Sure", "You got it"]
         },
         "address": {
-            "examples":["address", "show me address", "could you show me some address", "please, show me address"],
+            "examples":["address", "show me address", "could you show me some address", "please show me address"],
             "responses":["OK", "Look here", "Sure", "You got it"]
         },
         "peaple": {
-            "examples":["peaple", "give me peaple", "give me peaple of birthday"],
+            "examples":["peaple", "give me peaple"],
             "responses":["OK", "Look here", "Sure", "You got it"]
         },
     },
