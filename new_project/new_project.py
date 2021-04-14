@@ -100,7 +100,7 @@ def parser(com, arg, my_adressbook):
         "deletecontact": "<name> <value>",
         "deletenotes": "<name> <tag> <value>",
         "findcontact": "<second_key (all, phone, birthday, email, address, notes)> <name>",
-        "findbytag":"<tag>",
+        "findbytag":f"<tag {TAGS}>",
         "name": "<part or full name>",
         "phone": "<part or full phone-number>",
         "birthday": "<part or full date of birthday>",
