@@ -413,13 +413,13 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
             answer = random.choice(BOT_HANDLERS["actions"]["findcontact"]["responses"])
             temp = str(self.day_to_birthday(name)) + " days to birthday"
             if arg == "all":
-                return answer + " " + str(self.data.get(name)) + " - " + temp
+                return answer + " : " + f"{name} have " + str(self.data.get(name)) + " - " + temp
             elif arg == "phone" or arg == "birthday":
-                return answer + " " + str(self.data.get(name).get(arg)) + " - " + temp
+                return answer + " : " + f"{name} have " + str(self.data.get(name).get(arg)) + " - " + temp
             elif arg == "email" or arg == "address":
-                return answer + " " + str(self.data.get(name).get(arg)) + " - " + temp
+                return answer + " : " + f"{name} have " + str(self.data.get(name).get(arg)) + " - " + temp
             elif arg == "notes":
-                return answer + " " + str(self.data.get(name).get(arg)) + " - " + temp
+                return answer + " : " + f"{name} have " + str(self.data.get(name).get(arg)) + " - " + temp
             else:
                 raise KeyError
         else:
