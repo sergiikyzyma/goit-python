@@ -1,4 +1,4 @@
-from adressbook import Record, NameError1, NameError2, NameError3, NameError4, NameError5, NameError6, NameError7, NameError8, NameError9, NameError10
+from adressbook import Record, NameError1, NameError2, NameError3, NameError4, NameError5, NameError6, NameError7, NameError8
 from helpers import BOT_HANDLERS, INTENTS, ACTIONS, TAGS
 import clean
 import os
@@ -10,20 +10,18 @@ import re
 
 def input_error(func):
     def inner(com, arg, adress_book):
-        my_error_1 = "You wrote wrong the second key or it's missing"
-        my_error_2 = "Wrong phone-number (must be in format XXX-XXX-XX-XX), or birthday (must be in format XX-XX-XXXX), or e-mail, or address!"
-        my_error_3 = "You maked the fail by inputing the command!"
-        my_error_4 = "You maked the fail by inputing the number of arguments!"
-        my_error_5 = "You wrote wrong the compound commmnd 'good bye'!"
-        my_error_6 = "You wrote wrong the compound command 'show all'!"
-        my_error_7 = "Missing name in database!"
-        my_error_8 = "Phone-number in database is not exiest yet!"
-        my_error_9 = "Date of birthday in database is not exiest yet!"
-        my_error_10 = "E-mail in database is not exiest yet!"
-        my_error_11 = "Address of living in database is not exiest yet!"
-        my_error_12 = "You maked the fail by inputing the path to the folder!"
-        my_error_13 = "Missing note in database!"
-        my_error_14 = "Missing tag in database!"
+        my_error_1 = "You wrote wrong the second key or it's missing\t" + random.choice(BOT_HANDLERS['failure_phrases'])
+        my_error_2 = "Wrong phone-number (must be in format XXX-XXX-XX-XX), or birthday (must be in format XX-XX-XXXX), or e-mail, or address!\t" + random.choice(BOT_HANDLERS['failure_phrases'])
+        my_error_3 = "You maked the fail by inputing the command!\t" + random.choice(BOT_HANDLERS['failure_phrases'])
+        my_error_4 = "You maked the fail by inputing the number of arguments!\t" + random.choice(BOT_HANDLERS['failure_phrases'])
+        my_error_5 = "Missing note in database!\t" + random.choice(BOT_HANDLERS['failure_phrases'])
+        my_error_6 = "Missing tag in database!\t" + random.choice(BOT_HANDLERS['failure_phrases'])
+        my_error_7 = "Missing name in database!\t" + random.choice(BOT_HANDLERS['failure_phrases'])
+        my_error_8 = "Phone-number in database is not exiest yet!\t" + random.choice(BOT_HANDLERS['failure_phrases'])
+        my_error_9 = "Date of birthday in database is not exiest yet!\t" + random.choice(BOT_HANDLERS['failure_phrases'])
+        my_error_10 = "E-mail in database is not exiest yet!\t" + random.choice(BOT_HANDLERS['failure_phrases'])
+        my_error_11 = "Address of living in database is not exiest yet!\t" + random.choice(BOT_HANDLERS['failure_phrases'])
+        my_error_12 = "You maked the fail by inputing the path to the folder!\t" + random.choice(BOT_HANDLERS['failure_phrases'])
         try:
             res = func(com, arg, adress_book)
         except KeyError:
@@ -50,10 +48,6 @@ def input_error(func):
             return my_error_11
         except NameError8:
             return my_error_12
-        except NameError9:
-            return my_error_13
-        except NameError10:
-            return my_error_14
         else:
             return res
 
@@ -83,7 +77,8 @@ def parser(com, arg, my_adressbook):
         "birthday": my_adressbook.findbirthday,
         "email": my_adressbook.findemail,
         "address": my_adressbook.findaddress,
-        "peaple":my_adressbook.givepeaplebirthday,
+        "people":my_adressbook.givepeoplebirthday,
+        "search": my_adressbook.search,
     }
     arguments = {
         #--------------------intents--------------------
@@ -106,7 +101,8 @@ def parser(com, arg, my_adressbook):
         "birthday": "<part or full date of birthday>",
         "email": "<part or full email>",
         "address": "<part or full address>",
-        "peaple":"<number>",
+        "people":"<number>",
+        "search": "<any>",
     }
     #--------------------intents--------------------
     if com in BOT_HANDLERS["intents"]["exit"]["examples"]:
@@ -126,6 +122,8 @@ def parser(com, arg, my_adressbook):
             result = "This folder was sorted and cleaned"
         else:
             raise NameError8
+    elif com in BOT_HANDLERS["actions"]["search"]["examples"]:
+        result = commands["search"](arg[0])
     elif com in BOT_HANDLERS["actions"]["addcontact"]["examples"]:
         result = commands["addcontact"](arg[0], arg[1])
     elif com in BOT_HANDLERS["actions"]["addnotes"]["examples"]:
@@ -152,8 +150,8 @@ def parser(com, arg, my_adressbook):
         result = commands["email"](arg[0])
     elif com in BOT_HANDLERS["actions"]["address"]["examples"]:
         result = commands["address"](arg[0])
-    elif com in BOT_HANDLERS["actions"]["peaple"]["examples"]:
-        result = commands["peaple"](arg[0])
+    elif com in BOT_HANDLERS["actions"]["people"]["examples"]:
+        result = commands["people"](arg[0])
     elif com in BOT_HANDLERS["failure_phrases"] or com == None:
         result = random.choice(BOT_HANDLERS['failure_phrases'])
     return result
@@ -180,6 +178,9 @@ def main():
         "petrov": {
             "phone": ["098-333-44-44", "063-999-45-56"],
             "birthday": "07-03-1983",
+            "email": "petrov@gmail.com",
+            "address": "Minsk, Pushkin st, 5",
+            "notes": ["event: daughther bd party", "allergy: milk, nuts", "preference: ponny"],
         },
         "sidorov": {
             "phone": ["050-444-55-66"],
@@ -211,7 +212,7 @@ def main():
         if kommande not in BOT_HANDLERS["actions"]["clean"]["examples"]:
             argumente = argumente.lower().split(" ")
         result = parser(kommande, argumente, my_record)
-        print("{:>20}".format("Your assistent: "), result)
+        print("{:>20}".format(f"Your assistant:"), result)
         if result in BOT_HANDLERS["intents"]["exit"]["responses"]:
             break
 

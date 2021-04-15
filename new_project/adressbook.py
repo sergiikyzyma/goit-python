@@ -37,12 +37,6 @@ class NameError7(Exception):
 class NameError8(Exception):
     pass
 
-class NameError9(Exception):
-    pass
-
-class NameError10(Exception):
-    pass
-
 class Adressbook(UserDict):
     def add_Record(self, name, value, type_value="phone"):
         if self.data == dict():
@@ -261,7 +255,7 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
                 temp = "I changed note"
                 return answer + ": " + temp
             else:
-                raise NameError9
+                raise NameError1
         else:
             raise NameError3
 
@@ -342,7 +336,7 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
                     self.data.pop(name)
                 return answer + ": " + temp
             else:
-                raise NameError9
+                raise NameError1
         else:
             raise NameError3
 
@@ -365,7 +359,7 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
             self.value = "{}:{}".format(tag, value)
             return self.__add_notes(name, self.value)
         else:
-            raise NameError10
+            raise NameError2
 
     def changecontact(self, name, old_value, new_value):
         self.value = new_value
@@ -386,7 +380,7 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
             self.value = "{}:{}".format(tag, new_value)
             return self.__change_notes(name, temp_value, self.value)
         else:
-            raise NameError10
+            raise NameError2
 
     def deletecontact(self, name, value):
         self.value = value
@@ -406,20 +400,25 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
             self.value = "{}:{}".format(tag, value)
             return self.__delete_notes(name, self.value)
         else:
-            raise NameError10
+            raise NameError2
 
     def findcontact(self, arg, name):
         if self.is_name(name):
             answer = random.choice(BOT_HANDLERS["actions"]["findcontact"]["responses"])
             temp = str(self.day_to_birthday(name)) + " days to birthday"
+            args = ('phone', 'birthday', 'email', 'address', 'notes')
             if arg == "all":
-                return answer + " : " + f"{name} have " + str(self.data.get(name)) + " - " + temp
-            elif arg == "phone" or arg == "birthday":
-                return answer + " : " + f"{name} have " + str(self.data.get(name).get(arg)) + " - " + temp
-            elif arg == "email" or arg == "address":
-                return answer + " : " + f"{name} have " + str(self.data.get(name).get(arg)) + " - " + temp
-            elif arg == "notes":
-                return answer + " : " + f"{name} have " + str(self.data.get(name).get(arg)) + " - " + temp
+                return f"\n {answer}:\n Just reminder, {name.capitalize()} has {temp}\n" + self.datatable({name:self.data.get(name)})
+            elif [i for i in args if i == arg] == [arg]:
+                tab = PrettyTable(["name", arg])
+                if type(self.data.get(name).get(arg)) == list:
+                    _arg = ''
+                    for a in self.data.get(name).get(arg):
+                        _arg += f"{a}\n"
+                    tab.add_row([name.capitalize(), _arg])
+                else:
+                    tab.add_row([name.capitalize(), self.data.get(name).get(arg)])
+                return answer + "\n" + tab.get_string(title=f"{name.capitalize()} has {temp}")
             else:
                 raise KeyError
         else:
@@ -428,12 +427,12 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
     def hello(self):
         return random.choice(BOT_HANDLERS["intents"]["hello"]["responses"])
 
-    def showall(self):
+    def datatable(self, data):
         tabl_head = ['name', 'phone', 'birthday', 'email', 'address', 'notes']
         table = PrettyTable(tabl_head)
-        for name, values in self.data.items():
+        for name, values in data.items():
             tabl = ['', '', '', '', '', '']
-            tabl[0] = name
+            tabl[0] = name.capitalize()
             for key, value in values.items():
                 if key == "phone":
                     _phone = ''
@@ -456,8 +455,25 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
                     tabl[5] = _note
             table.add_row(tabl)
             tabl.clear()
+        return table.get_string(title="Client's database")
+
+    def showall(self):
         answer = random.choice(BOT_HANDLERS["intents"]["show"]["responses"])
-        return answer + "\n" + table.get_string(title="Full client's databases")
+        return answer + "\n" + self.datatable(self.data)
+
+    def search(self, contact):
+        if contact[0] == "#":
+            contact = contact[1:]
+        Search_result = {}
+        for key, value in self.data.items():
+            act_1 = re.search(str(contact.lower()), str(value).lower())
+            act_2 = re.search(str(contact.lower()), str(key).lower())
+            if act_1 or act_2:
+                Search_result[key.capitalize()] = value
+        if Search_result == {}:
+            return "Nothig has found"
+        answer = random.choice(BOT_HANDLERS["actions"]["search"]["responses"])
+        return answer + "\n" + self.datatable(Search_result)
 
     def ausgang(self):
         return random.choice(BOT_HANDLERS["intents"]["exit"]["responses"])
@@ -484,17 +500,19 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
         answer = random.choice(BOT_HANDLERS["intents"]["help"]["responses"])
         return answer + " " + result
 
-    def givepeaplebirthday(self, number):
+    def givepeoplebirthday(self, number):
         result = ""
+        bd = {}
         for name in self.data.keys():
             if self.day_to_birthday(name) in range(int(number)):
                 temp = str(self.day_to_birthday(name)) + " days to birthday"
-                result += "\n\t\t\t" + str(name) + " " + str(self.data[name]) + " - " + str(temp)
+                bd[name.capitalize()] = self.data[name]
+                result += f"\n{str(name.capitalize())} - {str(temp)}"
         if result:
-            answer = random.choice(BOT_HANDLERS["actions"]["peaple"]["responses"])
-            return answer + " " + result + " " + temp
+            answer = random.choice(BOT_HANDLERS["actions"]["people"]["responses"])
+            return f"{answer}\n {result}\n {self.datatable(bd)}"
         else:
-            return "No peaple"
+            return "No people"
 
     def findname(self, part_name):
         result = ""
@@ -576,4 +594,4 @@ class Record(Name, Phone, Birthday, Email, Address, Notes):
             answer = random.choice(BOT_HANDLERS["actions"]["findbytag"]["responses"])
             return answer + " " + result
         else:
-            raise NameError9
+            raise NameError1
